@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
 import LogoutButton from './LogoutButton'
 
 export default async function DashboardPage() {
@@ -17,6 +18,12 @@ export default async function DashboardPage() {
         <p className="text-sm text-zinc-500 mb-6">
           Welcome, <span className="font-medium text-zinc-900">{user.email}</span>
         </p>
+        <Link
+          href="/lessons"
+          className="block w-full text-center px-4 py-2 rounded-lg bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-700 transition-colors mb-3"
+        >
+          Start learning →
+        </Link>
         <LogoutButton />
       </div>
     </div>
