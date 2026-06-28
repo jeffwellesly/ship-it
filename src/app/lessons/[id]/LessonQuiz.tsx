@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { completeLesson } from './actions'
+import { completeLesson, type NewBadge } from './actions'
 
 type Question = {
   id: string
@@ -21,6 +21,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Pr
   const [submitted, setSubmitted] = useState(false)
   const [completed, setCompleted] = useState(alreadyCompleted)
   const [wrongIds, setWrongIds] = useState<Set<string>>(new Set())
+  const [newBadges, setNewBadges] = useState<NewBadge[]>([])
   const [pending, startTransition] = useTransition()
 
   const allAnswered = questions.every((q) => answers[q.id] !== undefined)
@@ -41,7 +42,10 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Pr
 
     if (wrong.size === 0) {
       startTransition(async () => {
-        await completeLesson(lessonId)
+        const result = await completeLesson(lessonId)
+        if ('success' in result) {
+          setNewBadges(result.newBadges)
+        }
         setCompleted(true)
       })
     }
@@ -84,12 +88,27 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Pr
       </div>
 
       {completed && (
-        <div className="mb-5 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-sm font-medium text-green-800">
-            {alreadyCompleted
-              ? 'You already completed this lesson. Correct answers shown below.'
-              : '✓ Lesson complete — +10 XP earned'}
-          </p>
+        <div className="mb-5 space-y-3">
+          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-sm font-medium text-green-800">
+              {alreadyCompleted
+                ? 'You already completed this lesson. Correct answers shown below.'
+                : '✓ Lesson complete — +10 XP earned'}
+            </p>
+          </div>
+
+          {newBadges.map((badge) => (
+            <div
+              key={badge.name}
+              className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-3"
+            >
+              <span className="text-2xl">{badge.icon}</span>
+              <div>
+                <p className="text-sm font-semibold text-amber-900">Badge unlocked: {badge.name}</p>
+                <p className="text-xs text-amber-700">{badge.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
