@@ -26,6 +26,7 @@ export async function completeLesson(lessonId: string): Promise<CompleteLessonRe
   revalidatePath('/lessons')
   revalidatePath(`/lessons/${lessonId}`)
   revalidatePath('/dashboard')
+  revalidatePath('/courses')
 
   return { success: true, newBadges: data.new_badges ?? [] }
 }

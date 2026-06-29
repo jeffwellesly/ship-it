@@ -60,7 +60,7 @@ export default async function DashboardPage() {
         )}
 
         <Link
-          href="/lessons"
+          href="/courses"
           className="block w-full text-center px-4 py-2 rounded-lg bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-700 transition-colors mb-3"
         >
           Start learning →

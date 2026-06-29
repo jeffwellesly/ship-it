@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
 import { completeLesson, type NewBadge } from './actions'
 
 type Question = {
@@ -14,9 +15,10 @@ type Props = {
   lessonId: string
   questions: Question[]
   alreadyCompleted: boolean
+  nextLessonId?: string | null
 }
 
-export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Props) {
+export default function LessonQuiz({ lessonId, questions, alreadyCompleted, nextLessonId }: Props) {
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [completed, setCompleted] = useState(alreadyCompleted)
@@ -59,71 +61,99 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Pr
 
   function choiceClass(q: Question, idx: number): string {
     const base =
-      'flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors text-sm select-none'
+      'flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors text-sm select-none'
 
     if (isReviewing) {
       if (idx === q.correct_choice_index)
-        return `${base} bg-green-50 border-green-300 text-green-800 cursor-default`
-      return `${base} bg-zinc-50 border-zinc-200 text-zinc-400 cursor-default`
+        return `${base} bg-emerald-950/60 border-emerald-700 text-emerald-300 cursor-default`
+      return `${base} bg-zinc-800 border-zinc-700 text-zinc-500 cursor-default`
     }
 
     if (submitted && wrongIds.has(q.id)) {
       if (idx === q.correct_choice_index)
-        return `${base} bg-green-50 border-green-300 text-green-800 cursor-default`
+        return `${base} bg-emerald-950/60 border-emerald-700 text-emerald-300 cursor-default`
       if (idx === answers[q.id])
-        return `${base} bg-red-50 border-red-300 text-red-700 cursor-default`
-      return `${base} bg-zinc-50 border-zinc-200 text-zinc-400 cursor-default`
+        return `${base} bg-red-950/60 border-red-700 text-red-300 cursor-default`
+      return `${base} bg-zinc-800 border-zinc-700 text-zinc-500 cursor-default`
     }
 
-    if (answers[q.id] === idx) return `${base} bg-zinc-900 border-zinc-900 text-white`
-    return `${base} bg-white border-zinc-200 text-zinc-700 hover:border-zinc-400`
+    if (answers[q.id] === idx) return `${base} bg-indigo-600 border-indigo-500 text-white`
+    return `${base} bg-zinc-800 border-zinc-700 text-zinc-300 hover:border-zinc-500`
   }
 
   return (
     <div className="mt-6">
       <div className="flex items-center gap-3 mb-5">
-        <div className="h-px flex-1 bg-zinc-200" />
-        <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">Quiz</span>
-        <div className="h-px flex-1 bg-zinc-200" />
+        <div className="h-px flex-1 bg-zinc-800" />
+        <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Quiz</span>
+        <div className="h-px flex-1 bg-zinc-800" />
       </div>
 
-      {completed && (
-        <div className="mb-5 space-y-3">
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-sm font-medium text-green-800">
-              {alreadyCompleted
-                ? 'You already completed this lesson. Correct answers shown below.'
-                : '✓ Lesson complete — +10 XP earned'}
-            </p>
+      {/* Completion banner — freshly completed */}
+      {completed && !alreadyCompleted && (
+        <div className="mb-5 rounded-2xl overflow-hidden border border-emerald-800">
+          <div className="bg-gradient-to-r from-emerald-700 to-teal-700 px-6 py-5">
+            <p className="text-xl font-black text-white">🎉 Lesson complete!</p>
+            <p className="text-emerald-200 text-sm mt-1">You&apos;re on a roll — keep going.</p>
           </div>
-
+          <div className="bg-zinc-900 border-t border-emerald-800 px-6 py-4 flex items-center justify-between">
+            <div className="flex items-baseline gap-1">
+              <span className="text-3xl font-black text-amber-400">+10</span>
+              <span className="text-sm font-bold text-amber-500">XP</span>
+            </div>
+            {nextLessonId && (
+              <Link
+                href={`/lessons/${nextLessonId}`}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors"
+              >
+                Next lesson →
+              </Link>
+            )}
+          </div>
           {newBadges.map((badge) => (
             <div
               key={badge.name}
-              className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-3"
+              className="px-6 py-4 border-t border-amber-900/40 flex items-center gap-3 bg-amber-950/30"
             >
-              <span className="text-2xl">{badge.icon}</span>
+              <span className="text-3xl">{badge.icon}</span>
               <div>
-                <p className="text-sm font-semibold text-amber-900">Badge unlocked: {badge.name}</p>
-                <p className="text-xs text-amber-700">{badge.description}</p>
+                <p className="text-sm font-bold text-amber-300">Badge unlocked: {badge.name}</p>
+                <p className="text-xs text-amber-500">{badge.description}</p>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      <div className="space-y-5">
+      {/* Already-completed notice */}
+      {completed && alreadyCompleted && (
+        <div className="mb-5 p-4 bg-zinc-800 border border-zinc-700 rounded-xl flex items-center justify-between">
+          <p className="text-sm text-zinc-400">
+            ✓ Already completed — correct answers shown below.
+          </p>
+          {nextLessonId && (
+            <Link
+              href={`/lessons/${nextLessonId}`}
+              className="text-indigo-400 hover:text-indigo-300 text-sm font-bold transition-colors whitespace-nowrap ml-4"
+            >
+              Next →
+            </Link>
+          )}
+        </div>
+      )}
+
+      <div className="space-y-4">
         {questions.map((q, qIdx) => {
           const isWrong = submitted && wrongIds.has(q.id)
           return (
             <div
               key={q.id}
-              className={`bg-white rounded-lg border p-5 transition-colors ${
-                isWrong ? 'border-red-200' : 'border-zinc-200'
+              className={`bg-zinc-900 rounded-2xl border p-5 transition-colors ${
+                isWrong ? 'border-red-800' : 'border-zinc-800'
               }`}
             >
-              <p className="font-medium text-zinc-900 mb-3">
-                <span className="text-zinc-400 mr-2">{qIdx + 1}.</span>
+              <p className="font-semibold text-zinc-100 mb-3">
+                <span className="text-zinc-500 mr-2">{qIdx + 1}.</span>
                 {q.question_text}
               </p>
               <div className="space-y-2">
@@ -141,7 +171,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Pr
                 ))}
               </div>
               {isWrong && (
-                <p className="mt-2 text-xs text-red-500">
+                <p className="mt-2 text-xs text-red-400">
                   Incorrect — the correct answer is highlighted above.
                 </p>
               )}
@@ -155,7 +185,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Pr
           {submitted && wrongIds.size > 0 ? (
             <button
               onClick={handleRetry}
-              className="px-4 py-2 rounded-lg bg-zinc-100 text-zinc-700 text-sm font-medium hover:bg-zinc-200 transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors"
             >
               Try again
             </button>
@@ -163,7 +193,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted }: Pr
             <button
               onClick={handleSubmit}
               disabled={!allAnswered || pending}
-              className="px-6 py-2 rounded-lg bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {pending ? 'Saving...' : 'Check answers'}
             </button>
