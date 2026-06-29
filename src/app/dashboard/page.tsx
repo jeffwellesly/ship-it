@@ -40,7 +40,7 @@ export default async function DashboardPage() {
             <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-3">Badges</p>
             <div className="space-y-2">
               {userBadges.map((ub) => {
-                const badge = ub.badges as { name: string; description: string; icon: string } | null
+                const badge = ub.badges as unknown as { name: string; description: string; icon: string } | null
                 if (!badge) return null
                 return (
                   <div
