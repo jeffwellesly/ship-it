@@ -2,46 +2,35 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
-        <div className="mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-zinc-900 text-white text-2xl mb-6">
+        <div className="mb-10">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 text-2xl mb-6 shadow-lg shadow-indigo-900/40">
             🚀
           </div>
-          <h1 className="text-4xl font-bold text-zinc-900 tracking-tight">Ship It</h1>
-          <p className="mt-3 text-lg text-zinc-500">
-            The PM crash course that actually teaches you how software works.
+          <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3">Ship It</p>
+          <h1 className="text-4xl font-black text-white tracking-tight leading-tight">
+            Learn to think in tech.
+          </h1>
+          <p className="mt-4 text-base text-zinc-400 leading-relaxed">
+            Plain-English courses on software, AI, and machine learning — built for PMs, founders,
+            and anyone who wants to stop nodding and start understanding.
           </p>
         </div>
 
         <div className="space-y-3">
           <Link
             href="/login"
-            className="block w-full px-6 py-3 rounded-lg bg-zinc-900 text-white font-medium hover:bg-zinc-700 transition-colors"
+            className="block w-full px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors shadow-lg shadow-indigo-900/40"
           >
-            Get started
+            Get started free
           </Link>
           <Link
             href="/login"
-            className="block w-full px-6 py-3 rounded-lg border border-zinc-200 text-zinc-700 font-medium hover:border-zinc-400 transition-colors bg-white"
+            className="block w-full px-6 py-3 rounded-xl border border-zinc-700 text-zinc-400 font-medium hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
           >
             Sign in
           </Link>
-        </div>
-
-        <div className="mt-12 grid grid-cols-3 gap-4 text-center">
-          <div className="p-4 bg-white rounded-lg border border-zinc-200">
-            <div className="text-2xl font-bold text-zinc-900">6</div>
-            <div className="text-xs text-zinc-500 mt-1">lessons</div>
-          </div>
-          <div className="p-4 bg-white rounded-lg border border-zinc-200">
-            <div className="text-2xl font-bold text-zinc-900">10</div>
-            <div className="text-xs text-zinc-500 mt-1">quiz questions</div>
-          </div>
-          <div className="p-4 bg-white rounded-lg border border-zinc-200">
-            <div className="text-2xl font-bold text-zinc-900">~30m</div>
-            <div className="text-xs text-zinc-500 mt-1">to complete</div>
-          </div>
         </div>
       </div>
     </div>
