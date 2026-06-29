@@ -94,14 +94,12 @@ export default async function LessonPage({
           </div>
         </div>
 
-        {questions && questions.length > 0 && (
-          <LessonQuiz
-            lessonId={lesson.id}
-            questions={questions}
-            alreadyCompleted={!!progress}
-            nextLessonId={nextLessonId}
-          />
-        )}
+        <LessonQuiz
+          lessonId={lesson.id}
+          questions={questions ?? []}
+          alreadyCompleted={!!progress}
+          nextLessonId={nextLessonId}
+        />
       </div>
     </div>
   )
