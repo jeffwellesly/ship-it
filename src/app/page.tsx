@@ -57,7 +57,7 @@ export default async function Home() {
         <p className="text-sm font-bold text-rose-400 uppercase tracking-widest mb-5">Ship It</p>
 
         {/* Headline */}
-        <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 text-balance">
           A learning platform for builders who don&apos;t code yet
         </h1>
 
