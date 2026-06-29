@@ -10,11 +10,11 @@ export default function Home() {
           </div>
           <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3">Ship It</p>
           <h1 className="text-4xl font-black text-white tracking-tight leading-tight">
-            Learn to think in tech.
+            Build real software products, even if you&apos;ve never coded.
           </h1>
           <p className="mt-4 text-base text-zinc-400 leading-relaxed">
-            Plain-English courses on software, AI, and machine learning — built for PMs, founders,
-            and anyone who wants to stop nodding and start understanding.
+            No-jargon, hands-on courses for PMs, founders, and beginners. Learn how software, AI,
+            and product building work by shipping real projects step by step.
           </p>
         </div>
 
@@ -23,7 +23,7 @@ export default function Home() {
             href="/login"
             className="block w-full px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors shadow-lg shadow-indigo-900/40"
           >
-            Get started free
+            Ship your first project
           </Link>
           <Link
             href="/login"
