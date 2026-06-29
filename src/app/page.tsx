@@ -1,37 +1,108 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 
-export default function Home() {
+export default async function Home() {
+  // Fetch lesson count for the live course (public RLS allows this without auth)
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('lessons')
+    .select('*', { count: 'exact', head: true })
+
+  const lessonCount = count ?? 0
+
+  const tracks = [
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+        </svg>
+      ),
+      iconColor: 'text-violet-400',
+      title: 'Software dev',
+      subtitle: `${lessonCount} lessons`,
+      active: true,
+      href: '/login',
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+        </svg>
+      ),
+      iconColor: 'text-zinc-500',
+      title: 'AI for everyone',
+      subtitle: 'Coming soon',
+      active: false,
+      href: null,
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+        </svg>
+      ),
+      iconColor: 'text-zinc-500',
+      title: 'ML for everyone',
+      subtitle: 'Coming soon',
+      active: false,
+      href: null,
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4">
-      <div className="max-w-md w-full text-center">
-        <div className="mb-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 text-2xl mb-6 shadow-lg shadow-indigo-900/40">
-            🚀
-          </div>
-          <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3">Ship It</p>
-          <h1 className="text-4xl font-black text-white tracking-tight leading-tight">
-            Build real software products, even if you&apos;ve never coded.
-          </h1>
-          <p className="mt-4 text-base text-zinc-400 leading-relaxed">
-            No-jargon, hands-on courses for PMs, founders, and beginners. Learn how software, AI,
-            and product building work by shipping real projects step by step.
-          </p>
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-6">
+      <div className="max-w-3xl w-full text-center">
+
+        {/* Brand label */}
+        <p className="text-xs font-bold text-rose-400 uppercase tracking-widest mb-5">Ship It</p>
+
+        {/* Headline */}
+        <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight mb-4">
+          A learning platform for builders<br className="hidden md:block" /> who don&apos;t code yet
+        </h1>
+
+        {/* Subheadline */}
+        <p className="text-base text-zinc-400 mb-10">
+          Pick a track. Learn the concept. Ship something real.
+        </p>
+
+        {/* Course cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+          {tracks.map((track) => {
+            const card = (
+              <div
+                className={`text-left p-5 rounded-xl border transition-colors ${
+                  track.active
+                    ? 'bg-zinc-800 border-zinc-700 hover:border-zinc-500 cursor-pointer'
+                    : 'bg-zinc-900 border-zinc-800 cursor-default'
+                }`}
+              >
+                <span className={`mb-3 block ${track.iconColor}`}>{track.icon}</span>
+                <p className={`font-semibold text-sm ${track.active ? 'text-white' : 'text-zinc-500'}`}>
+                  {track.title}
+                </p>
+                <p className={`text-xs mt-0.5 ${track.active ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                  {track.subtitle}
+                </p>
+              </div>
+            )
+
+            return track.href ? (
+              <Link key={track.title} href={track.href}>{card}</Link>
+            ) : (
+              <div key={track.title}>{card}</div>
+            )
+          })}
         </div>
 
-        <div className="space-y-3">
-          <Link
-            href="/login"
-            className="block w-full px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors shadow-lg shadow-indigo-900/40"
-          >
-            Ship your first project
-          </Link>
-          <Link
-            href="/login"
-            className="block w-full px-6 py-3 rounded-xl border border-zinc-700 text-zinc-400 font-medium hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
-          >
+        {/* Sign in */}
+        <p className="text-sm text-zinc-600">
+          Already have an account?{' '}
+          <Link href="/login" className="text-zinc-400 hover:text-white transition-colors">
             Sign in
           </Link>
-        </div>
+        </p>
+
       </div>
     </div>
   )
