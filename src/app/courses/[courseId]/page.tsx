@@ -101,7 +101,13 @@ export default async function CourseDetailPage({
       {/* Course header — full bleed gradient */}
       <div style={{ background: 'linear-gradient(135deg,#7F77DD,#3C3489)' }} className="px-7 py-8">
         <div className="max-w-sm mx-auto">
-          <div className="text-4xl mb-3">{course.icon}</div>
+          <div className="w-12 h-12 rounded-[14px] bg-white/20 flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 13a8 8 0 0 1 7 7 6 6 0 0 0 3 -5 9 9 0 0 0 6 -8 3 3 0 0 0 -3 -3 9 9 0 0 0 -8 6 6 6 0 0 0 -5 3" />
+              <path d="M7 14a6 6 0 0 0 -3 6 6 6 0 0 0 6 -3" />
+              <circle cx="15" cy="9" r="1" fill="white" stroke="none" />
+            </svg>
+          </div>
           <h1 className="text-[22px] font-medium text-white mb-1.5">{course.title}</h1>
           <p className="text-[13px] text-[#cfc9f7] mb-5 leading-relaxed">{course.description}</p>
           <div>
