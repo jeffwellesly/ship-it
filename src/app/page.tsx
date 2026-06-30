@@ -54,7 +54,7 @@ export default async function Home() {
       <div className="max-w-3xl w-full text-center">
 
         {/* Brand label */}
-        <p className="text-sm font-bold text-rose-400 uppercase tracking-widest mb-5">Ship It</p>
+        <p className="text-sm font-bold text-indigo-400 uppercase tracking-widest mb-5">Ship It</p>
 
         {/* Headline */}
         <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 text-balance">
