@@ -32,9 +32,14 @@ export async function proxy(request: NextRequest) {
   if (
     !user &&
     (request.nextUrl.pathname.startsWith('/dashboard') ||
-      request.nextUrl.pathname.startsWith('/courses'))
+      request.nextUrl.pathname.startsWith('/courses') ||
+      request.nextUrl.pathname.startsWith('/lessons'))
   ) {
     return NextResponse.redirect(new URL('/login', request.nextUrl))
+  }
+
+  if (user && request.nextUrl.pathname === '/login') {
+    return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
   }
 
   return response
