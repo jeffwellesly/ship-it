@@ -61,10 +61,14 @@ export default function LoginPage() {
       {/* Logo */}
       <Link href="/" className="mb-8 flex flex-col items-center gap-2.5">
         <div
-          className="w-12 h-12 rounded-[14px] flex items-center justify-center text-xl"
+          className="w-12 h-12 rounded-[14px] flex items-center justify-center"
           style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
         >
-          🚀
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 13a8 8 0 0 1 7 7 6 6 0 0 0 3 -5 9 9 0 0 0 6 -8 3 3 0 0 0 -3 -3 9 9 0 0 0 -8 6 6 6 0 0 0 -5 3" />
+            <path d="M7 14a6 6 0 0 0 -3 6 6 6 0 0 0 6 -3" />
+            <circle cx="15" cy="9" r="1" fill="white" stroke="none" />
+          </svg>
         </div>
         <span className="text-[13px] font-medium uppercase tracking-[0.08em] text-[#9b93f0]">
           Ship It
