@@ -20,20 +20,21 @@ type Props = {
 
 function CompletionBanner({ newBadges, nextLessonId }: { newBadges: NewBadge[]; nextLessonId?: string | null }) {
   return (
-    <div className="rounded-2xl overflow-hidden border border-emerald-800">
-      <div className="bg-gradient-to-r from-emerald-700 to-teal-700 px-6 py-5">
-        <p className="text-xl font-black text-white">🎉 Lesson complete!</p>
-        <p className="text-emerald-200 text-sm mt-1">You&apos;re on a roll — keep going.</p>
+    <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-[#2a2a2e]">
+        <p className="text-[16px] font-medium text-white">Lesson complete 🎉</p>
+        <p className="text-[13px] text-[#888] mt-0.5">You&apos;re on a roll — keep going.</p>
       </div>
-      <div className="bg-zinc-900 border-t border-emerald-800 px-6 py-4 flex items-center justify-between">
+      <div className="px-5 py-4 flex items-center justify-between">
         <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-black text-amber-400">+10</span>
-          <span className="text-sm font-bold text-amber-500">XP</span>
+          <span className="text-[28px] font-medium text-[#FAC775]">+10</span>
+          <span className="text-[13px] font-medium text-[#EF9F27]">XP</span>
         </div>
         {nextLessonId && (
           <Link
             href={`/lessons/${nextLessonId}`}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors"
+            className="px-5 py-2.5 rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity"
+            style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
           >
             Next lesson →
           </Link>
@@ -42,12 +43,14 @@ function CompletionBanner({ newBadges, nextLessonId }: { newBadges: NewBadge[]; 
       {newBadges.map((badge) => (
         <div
           key={badge.name}
-          className="px-6 py-4 border-t border-amber-900/40 flex items-center gap-3 bg-amber-950/30"
+          className="flex items-center gap-3 px-5 py-3.5 border-t border-[#2a2a2e] bg-[#1c1c1f]"
         >
-          <span className="text-3xl">{badge.icon}</span>
+          <div className="w-[34px] h-[34px] rounded-[10px] bg-[#3C3489] flex items-center justify-center flex-shrink-0 text-lg">
+            {badge.icon}
+          </div>
           <div>
-            <p className="text-sm font-bold text-amber-300">Badge unlocked: {badge.name}</p>
-            <p className="text-xs text-amber-500">{badge.description}</p>
+            <p className="text-[13px] font-medium text-white">Badge unlocked: {badge.name}</p>
+            <p className="text-[12px] text-[#888]">{badge.description}</p>
           </div>
         </div>
       ))}
@@ -57,14 +60,14 @@ function CompletionBanner({ newBadges, nextLessonId }: { newBadges: NewBadge[]; 
 
 function AlreadyCompletedBanner({ nextLessonId, hasQuestions }: { nextLessonId?: string | null; hasQuestions: boolean }) {
   return (
-    <div className="p-4 bg-zinc-800 border border-zinc-700 rounded-xl flex items-center justify-between">
-      <p className="text-sm text-zinc-400">
+    <div className="flex items-center justify-between bg-[#1c1c1f] border border-[#2e2e32] rounded-xl px-4 py-3">
+      <p className="text-[13px] text-[#888]">
         {hasQuestions ? '✓ Already completed — correct answers shown below.' : '✓ Already read.'}
       </p>
       {nextLessonId && (
         <Link
           href={`/lessons/${nextLessonId}`}
-          className="text-indigo-400 hover:text-indigo-300 text-sm font-bold transition-colors whitespace-nowrap ml-4"
+          className="text-[#9b93f0] hover:opacity-80 text-[13px] font-medium transition-opacity whitespace-nowrap ml-4"
         >
           Next →
         </Link>
@@ -115,28 +118,28 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
   }
 
   function choiceClass(q: Question, idx: number): string {
-    const base =
-      'flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors text-sm select-none'
+    const base = 'flex items-start gap-3 p-3 rounded-xl border text-[13px] cursor-pointer transition-all select-none'
     if (isReviewing) {
       if (idx === q.correct_choice_index)
-        return `${base} bg-emerald-950/60 border-emerald-700 text-emerald-300 cursor-default`
-      return `${base} bg-zinc-800 border-zinc-700 text-zinc-500 cursor-default`
+        return `${base} bg-emerald-950/60 border-emerald-800 text-emerald-400 cursor-default`
+      return `${base} bg-[#1c1c1f] border-[#2e2e32] text-[#555] cursor-default`
     }
     if (submitted && wrongIds.has(q.id)) {
       if (idx === q.correct_choice_index)
-        return `${base} bg-emerald-950/60 border-emerald-700 text-emerald-300 cursor-default`
+        return `${base} bg-emerald-950/60 border-emerald-800 text-emerald-400 cursor-default`
       if (idx === answers[q.id])
-        return `${base} bg-red-950/60 border-red-700 text-red-300 cursor-default`
-      return `${base} bg-zinc-800 border-zinc-700 text-zinc-500 cursor-default`
+        return `${base} bg-red-950/60 border-red-800 text-red-400 cursor-default`
+      return `${base} bg-[#1c1c1f] border-[#2e2e32] text-[#555] cursor-default`
     }
-    if (answers[q.id] === idx) return `${base} bg-indigo-600 border-indigo-500 text-white`
-    return `${base} bg-zinc-800 border-zinc-700 text-zinc-300 hover:border-zinc-500`
+    if (answers[q.id] === idx)
+      return `${base} bg-gradient-to-br from-[#7F77DD] to-[#534AB7] border-transparent text-white`
+    return `${base} bg-[#1c1c1f] border-[#2e2e32] text-[#aaa] hover:border-[#555] hover:text-white`
   }
 
   // ── No-quiz lesson ──────────────────────────────────────────────
   if (!hasQuestions) {
     return (
-      <div className="mt-6">
+      <div className="mt-5">
         {completed && !alreadyCompleted && (
           <CompletionBanner newBadges={newBadges} nextLessonId={nextLessonId} />
         )}
@@ -147,7 +150,8 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
           <button
             onClick={markComplete}
             disabled={pending}
-            className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-900/40"
+            className="w-full py-[13px] rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
           >
             {pending ? 'Saving...' : 'Mark as read & continue →'}
           </button>
@@ -158,11 +162,11 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
 
   // ── Quiz lesson ─────────────────────────────────────────────────
   return (
-    <div className="mt-6">
+    <div className="mt-5">
       <div className="flex items-center gap-3 mb-5">
-        <div className="h-px flex-1 bg-zinc-800" />
-        <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Quiz</span>
-        <div className="h-px flex-1 bg-zinc-800" />
+        <div className="h-px flex-1 bg-[#2a2a2e]" />
+        <span className="text-[11px] font-medium tracking-[0.06em] text-[#555]">QUIZ</span>
+        <div className="h-px flex-1 bg-[#2a2a2e]" />
       </div>
 
       {completed && !alreadyCompleted && (
@@ -176,18 +180,16 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {questions.map((q, qIdx) => {
           const isWrong = submitted && wrongIds.has(q.id)
           return (
             <div
               key={q.id}
-              className={`bg-zinc-900 rounded-2xl border p-5 transition-colors ${
-                isWrong ? 'border-red-800' : 'border-zinc-800'
-              }`}
+              className={`bg-[#151517] rounded-2xl border p-5 ${isWrong ? 'border-red-800/60' : 'border-[#2a2a2e]'}`}
             >
-              <p className="font-semibold text-zinc-100 mb-3">
-                <span className="text-zinc-500 mr-2">{qIdx + 1}.</span>
+              <p className="text-[14px] font-medium text-white mb-3">
+                <span className="text-[#555] mr-2">{qIdx + 1}.</span>
                 {q.question_text}
               </p>
               <div className="space-y-2">
@@ -197,7 +199,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
                     className={choiceClass(q, idx)}
                     onClick={() => handleSelect(q.id, idx)}
                   >
-                    <span className="w-5 h-5 rounded-full border border-current flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold">
+                    <span className="w-5 h-5 rounded-full border border-current flex items-center justify-center flex-shrink-0 mt-0.5 text-[11px] font-medium">
                       {String.fromCharCode(65 + idx)}
                     </span>
                     <span>{choice}</span>
@@ -205,7 +207,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
                 ))}
               </div>
               {isWrong && (
-                <p className="mt-2 text-xs text-red-400">
+                <p className="mt-2.5 text-[12px] text-red-400">
                   Incorrect — the correct answer is highlighted above.
                 </p>
               )}
@@ -215,11 +217,11 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
       </div>
 
       {!completed && (
-        <div className="mt-5">
+        <div className="mt-4">
           {submitted && wrongIds.size > 0 ? (
             <button
               onClick={handleRetry}
-              className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-[#1c1c1f] border border-[#2e2e32] text-[#888] text-[13px] font-medium hover:text-white hover:border-[#555] transition-colors"
             >
               Try again
             </button>
@@ -227,7 +229,8 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
             <button
               onClick={handleSubmit}
               disabled={!allAnswered || pending}
-              className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-30"
+              style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
             >
               {pending ? 'Saving...' : 'Check answers'}
             </button>

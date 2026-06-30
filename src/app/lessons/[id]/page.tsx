@@ -15,7 +15,7 @@ export default async function LessonPage({
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: lesson }, { data: questions }, { data: progress }] = await Promise.all([
+  const [{ data: lesson }, { data: questions }, { data: progress }, { data: profile }] = await Promise.all([
     supabase
       .from('lessons')
       .select('*, modules(id, title, sort_order, course_id)')
@@ -28,9 +28,12 @@ export default async function LessonPage({
       .eq('user_id', user.id)
       .eq('lesson_id', id)
       .maybeSingle(),
+    supabase.from('profiles').select('total_xp').eq('id', user.id).single(),
   ])
 
   if (!lesson) notFound()
+
+  const xp = profile?.total_xp ?? 0
 
   const mod = lesson.modules as unknown as {
     id: string
@@ -39,7 +42,6 @@ export default async function LessonPage({
     course_id: string
   } | null
 
-  // Find next lesson: same module first, then first lesson of the next module
   let nextLessonId: string | null = null
   if (mod) {
     const { data: nextInModule } = await supabase
@@ -73,23 +75,37 @@ export default async function LessonPage({
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <div className="max-w-2xl mx-auto px-4 py-10">
-        <Link
-          href={mod ? `/courses/${mod.course_id}` : '/courses'}
-          className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-        >
-          ← Back to course
-        </Link>
+    <div className="min-h-screen bg-[#0c0c0c]">
 
-        <div className="mt-6 bg-zinc-900 rounded-2xl border border-zinc-800 p-8">
+      {/* Nav */}
+      <div className="border-b border-[#2a2a2e]">
+        <div className="max-w-lg mx-auto px-7 py-[18px] flex items-center justify-between">
+          <Link
+            href={mod ? `/courses/${mod.course_id}` : '/courses'}
+            className="text-[14px] text-[#888] hover:text-white transition-colors"
+          >
+            ← Back to course
+          </Link>
+          <div className="flex items-center gap-1.5 bg-[#1c1c1f] border border-[#3a2e1a] rounded-full px-3.5 py-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M13 3l-7 10h6l-1 8 7-10h-6l1-8z" />
+            </svg>
+            <span className="text-[13px] font-medium text-[#FAC775]">{xp} XP</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-lg mx-auto px-7 py-7">
+
+        {/* Lesson content */}
+        <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl p-7 mb-5">
           {mod && (
-            <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1">
+            <p className="text-[12px] font-medium tracking-[0.06em] text-[#9b93f0] mb-2">
               {mod.title}
             </p>
           )}
-          <h1 className="mt-1 text-2xl font-black text-zinc-100">{lesson.title}</h1>
-          <div className="mt-6 text-zinc-300 leading-relaxed whitespace-pre-wrap text-[15px]">
+          <h1 className="text-[22px] font-medium text-white mb-5">{lesson.title}</h1>
+          <div className="text-[14px] text-[#aaa] leading-relaxed whitespace-pre-wrap">
             {lesson.content}
           </div>
         </div>
@@ -100,6 +116,7 @@ export default async function LessonPage({
           alreadyCompleted={!!progress}
           nextLessonId={nextLessonId}
         />
+
       </div>
     </div>
   )

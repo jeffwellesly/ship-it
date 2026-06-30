@@ -57,23 +57,33 @@ export default async function CoursesPage() {
   const xp = profile?.total_xp ?? 0
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      {/* Top bar */}
-      <div className="border-b border-zinc-800 bg-zinc-900">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <span className="text-lg font-black text-white tracking-tight">Ship It 🚀</span>
-          <div className="flex items-center gap-2 bg-amber-400/10 border border-amber-400/30 rounded-full px-3 py-1.5">
-            <span className="text-amber-400 text-sm">⚡</span>
-            <span className="text-sm font-bold text-amber-300">{xp} XP</span>
+    <div className="min-h-screen bg-[#0c0c0c]">
+
+      {/* Nav */}
+      <div className="border-b border-[#2a2a2e]">
+        <div className="max-w-sm mx-auto px-7 py-[18px] flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <span className="text-[16px] font-medium text-white">Ship It</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9b93f0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 13a8 8 0 0 1 7 7 6 6 0 0 0 3 -5 9 9 0 0 0 6 -8 3 3 0 0 0 -3 -3 9 9 0 0 0 -8 6 6 6 0 0 0 -5 3" />
+              <path d="M7 14a6 6 0 0 0 -3 6 6 6 0 0 0 6 -3" />
+              <circle cx="15" cy="9" r="1" fill="#9b93f0" stroke="none" />
+            </svg>
+          </Link>
+          <div className="flex items-center gap-1.5 bg-[#1c1c1f] border border-[#3a2e1a] rounded-full px-3.5 py-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M13 3l-7 10h6l-1 8 7-10h-6l1-8z" />
+            </svg>
+            <span className="text-[13px] font-medium text-[#FAC775]">{xp} XP</span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-black text-white mb-1">Your courses</h1>
-        <p className="text-sm text-zinc-400 mb-8">Pick up where you left off.</p>
+      <div className="max-w-sm mx-auto px-7 py-7">
+        <h1 className="text-[26px] font-medium text-white mb-1">Your courses</h1>
+        <p className="text-[13px] text-[#888] mb-6">Pick up where you left off.</p>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {courses.map((course) => {
             const allLessons = course.modules.flatMap((m) => m.lessons)
             const total = allLessons.length
@@ -83,63 +93,48 @@ export default async function CoursesPage() {
             const allDone = completed === total && total > 0
 
             return (
-              <div
-                key={course.id}
-                className="rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 shadow-xl"
-              >
-                {/* Card header — gradient */}
-                <div className="bg-gradient-to-br from-indigo-600 to-violet-700 px-6 pt-7 pb-6">
-                  <div className="text-5xl mb-3">{course.icon}</div>
-                  <h2 className="text-xl font-black text-white leading-tight">{course.title}</h2>
-                </div>
-
-                {/* Card body */}
-                <div className="p-6">
-                  <p className="text-sm text-zinc-400 mb-5 leading-relaxed">{course.description}</p>
-
-                  {/* Progress */}
-                  <div className="mb-5">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-                        Progress
-                      </span>
-                      <span className="text-xs font-bold text-indigo-400">
-                        {completed}/{total} lessons
-                      </span>
-                    </div>
-                    <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-500"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                    <p className="text-right text-xs text-zinc-500 mt-1">{Math.round(pct)}% complete</p>
+              <div key={course.id} className="bg-[#151517] border border-[#2a2a2e] rounded-2xl p-5">
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="text-3xl leading-none mt-0.5">{course.icon}</span>
+                  <div className="min-w-0">
+                    <h2 className="text-[16px] font-medium text-white leading-snug">{course.title}</h2>
+                    <p className="text-[12px] text-[#888] mt-1 leading-relaxed">{course.description}</p>
                   </div>
-
-                  {/* CTA */}
-                  <Link
-                    href={currentId ? `/lessons/${currentId}` : `/courses/${course.id}`}
-                    className="block w-full text-center bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-colors text-sm shadow-lg shadow-indigo-900/40"
-                  >
-                    {completed === 0
-                      ? 'Start course →'
-                      : allDone
-                        ? 'Review course'
-                        : 'Continue →'}
-                  </Link>
-
-                  <Link
-                    href={`/courses/${course.id}`}
-                    className="block w-full text-center text-zinc-500 hover:text-zinc-300 text-xs mt-3 transition-colors"
-                  >
-                    View all modules
-                  </Link>
                 </div>
+
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] font-medium tracking-[0.06em] text-[#555]">PROGRESS</span>
+                    <span className="text-[12px] text-[#9b93f0]">{completed}/{total} lessons</span>
+                  </div>
+                  <div className="h-1 bg-[#1c1c1f] rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${pct}%`, background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
+                    />
+                  </div>
+                </div>
+
+                <Link
+                  href={currentId ? `/lessons/${currentId}` : `/courses/${course.id}`}
+                  className="block w-full text-center py-[11px] rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity mb-2"
+                  style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
+                >
+                  {completed === 0 ? 'Start course →' : allDone ? 'Review course' : 'Continue →'}
+                </Link>
+
+                <Link
+                  href={`/courses/${course.id}`}
+                  className="block w-full text-center text-[12px] text-[#555] hover:text-[#888] transition-colors"
+                >
+                  All modules
+                </Link>
               </div>
             )
           })}
         </div>
       </div>
+
     </div>
   )
 }

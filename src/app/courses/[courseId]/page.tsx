@@ -43,13 +43,7 @@ function computeStatuses(rawModules: RawModule[], completedIds: Set<string>): Mo
     const complete = lessons.every((l) => completedIds.has(l.id))
     prevModuleComplete = complete
 
-    return {
-      ...mod,
-      lessons: lessonsWithStatus,
-      locked,
-      complete,
-      completedCount: lessons.filter((l) => completedIds.has(l.id)).length,
-    }
+    return { ...mod, lessons: lessonsWithStatus, locked, complete, completedCount: lessons.filter((l) => completedIds.has(l.id)).length }
   })
 }
 
@@ -81,118 +75,92 @@ export default async function CourseDetailPage({
 
   const completedIds = new Set(progress?.map((p) => p.lesson_id) ?? [])
   const modules = computeStatuses((rawModules as unknown as RawModule[]) ?? [], completedIds)
-
   const totalLessons = modules.flatMap((m) => m.lessons).length
   const completedCount = modules.reduce((acc, m) => acc + m.completedCount, 0)
   const pct = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0
   const xp = profile?.total_xp ?? 0
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      {/* Top bar */}
-      <div className="border-b border-zinc-800 bg-zinc-900">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            href="/courses"
-            className="text-sm text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
-          >
-            ← All courses
+    <div className="min-h-screen bg-[#0c0c0c]">
+
+      {/* Nav */}
+      <div className="border-b border-[#2a2a2e]">
+        <div className="max-w-sm mx-auto px-7 py-[18px] flex items-center justify-between">
+          <Link href="/courses" className="text-[14px] text-[#888] hover:text-white transition-colors">
+            ← Courses
           </Link>
-          <div className="flex items-center gap-2 bg-amber-400/10 border border-amber-400/30 rounded-full px-3 py-1.5">
-            <span className="text-amber-400 text-sm">⚡</span>
-            <span className="text-sm font-bold text-amber-300">{xp} XP</span>
+          <div className="flex items-center gap-1.5 bg-[#1c1c1f] border border-[#3a2e1a] rounded-full px-3.5 py-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M13 3l-7 10h6l-1 8 7-10h-6l1-8z" />
+            </svg>
+            <span className="text-[13px] font-medium text-[#FAC775]">{xp} XP</span>
           </div>
         </div>
       </div>
 
-      {/* Course header */}
-      <div className="bg-gradient-to-br from-indigo-600 to-violet-700 px-4 py-10">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-5xl mb-3">{course.icon}</div>
-          <h1 className="text-2xl font-black text-white leading-tight mb-2">{course.title}</h1>
-          <p className="text-indigo-200 text-sm mb-5">{course.description}</p>
+      {/* Course header — full bleed gradient */}
+      <div style={{ background: 'linear-gradient(135deg,#7F77DD,#3C3489)' }} className="px-7 py-8">
+        <div className="max-w-sm mx-auto">
+          <div className="text-4xl mb-3">{course.icon}</div>
+          <h1 className="text-[22px] font-medium text-white mb-1.5">{course.title}</h1>
+          <p className="text-[13px] text-[#cfc9f7] mb-5 leading-relaxed">{course.description}</p>
           <div>
-            <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-indigo-300">
-                {completedCount} of {totalLessons} lessons complete
-              </span>
-              <span className="text-white">{Math.round(pct)}%</span>
+            <div className="flex items-center justify-between text-[12px] mb-1.5">
+              <span className="text-[#cfc9f7]">{completedCount} of {totalLessons} lessons</span>
+              <span className="text-white font-medium">{Math.round(pct)}%</span>
             </div>
-            <div className="h-2.5 bg-indigo-900/60 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-white/80 rounded-full transition-all duration-500"
-                style={{ width: `${pct}%` }}
-              />
+            <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+              <div className="h-full bg-white/70 rounded-full transition-all" style={{ width: `${pct}%` }} />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modules */}
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+      {/* Module list */}
+      <div className="max-w-sm mx-auto px-7 py-6 space-y-3">
         {modules.map((mod) => (
           <div
             key={mod.id}
-            className={`rounded-2xl overflow-hidden border ${
-              mod.locked ? 'border-zinc-800 opacity-60' : 'border-zinc-800'
-            } bg-zinc-900`}
+            className={`bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden transition-opacity ${mod.locked ? 'opacity-40' : ''}`}
           >
             {/* Module header */}
-            <div
-              className={`px-5 py-4 border-b ${
-                mod.complete
-                  ? 'bg-emerald-950/50 border-emerald-900/50'
-                  : mod.locked
-                    ? 'bg-zinc-900 border-zinc-800'
-                    : 'bg-indigo-950/40 border-indigo-900/30'
-              }`}
-            >
+            <div className="px-5 py-4 border-b border-[#2a2a2e]">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">
-                    Module {mod.sort_order}
+                  <p className="text-[11px] font-medium tracking-[0.06em] text-[#555] mb-0.5">
+                    MODULE {mod.sort_order}
                   </p>
-                  <h2 className="font-black text-zinc-100 leading-tight">{mod.title}</h2>
-                  <p className="text-sm text-zinc-400 mt-1 leading-relaxed">{mod.description}</p>
+                  <h2 className="text-[15px] font-medium text-white leading-snug">{mod.title}</h2>
                 </div>
-                <span
-                  className={`text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap flex-shrink-0 ${
-                    mod.complete
-                      ? 'bg-emerald-900/60 text-emerald-300'
-                      : mod.locked
-                        ? 'bg-zinc-800 text-zinc-500'
-                        : 'bg-indigo-900/60 text-indigo-300'
-                  }`}
-                >
-                  {mod.complete
-                    ? '✓ Complete'
+                <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 mt-0.5 whitespace-nowrap ${
+                  mod.complete
+                    ? 'bg-emerald-900/40 text-emerald-400'
                     : mod.locked
-                      ? '🔒 Locked'
-                      : `${mod.completedCount}/${mod.lessons.length}`}
+                      ? 'bg-[#1c1c1f] text-[#555]'
+                      : 'bg-[#3C3489]/50 text-[#9b93f0]'
+                }`}>
+                  {mod.complete ? '✓ Done' : mod.locked ? 'Locked' : `${mod.completedCount}/${mod.lessons.length}`}
                 </span>
               </div>
             </div>
 
-            {/* Lesson list — hidden if module locked */}
+            {/* Lessons */}
             {!mod.locked && (
-              <div className="divide-y divide-zinc-800">
-                {mod.lessons.map((lesson) => {
+              <div>
+                {mod.lessons.map((lesson, idx) => {
+                  const notLast = idx < mod.lessons.length - 1
+                  const divider = notLast ? 'border-b border-[#2a2a2e]' : ''
+
                   if (lesson.status === 'completed') {
                     return (
                       <Link
                         key={lesson.id}
                         href={`/lessons/${lesson.id}`}
-                        className="flex items-center gap-3 px-5 py-3.5 bg-emerald-950/30 hover:bg-emerald-950/50 transition-colors group"
+                        className={`flex items-center gap-3 px-5 py-3.5 hover:bg-[#1c1c1f] transition-colors ${divider}`}
                       >
-                        <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">
-                          ✓
-                        </div>
-                        <span className="flex-1 text-sm font-medium text-zinc-400 line-through">
-                          {lesson.title}
-                        </span>
-                        <span className="text-xs font-bold text-emerald-600 bg-emerald-900/40 px-2 py-0.5 rounded-full">
-                          +10 XP
-                        </span>
+                        <div className="w-6 h-6 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 text-xs flex-shrink-0">✓</div>
+                        <span className="flex-1 text-[13px] text-[#555]">{lesson.title}</span>
+                        <span className="text-[11px] font-medium text-[#3C3489]">+10 XP</span>
                       </Link>
                     )
                   }
@@ -202,17 +170,13 @@ export default async function CourseDetailPage({
                       <Link
                         key={lesson.id}
                         href={`/lessons/${lesson.id}`}
-                        className="flex items-center gap-3 px-5 py-4 bg-zinc-900 border-l-4 border-indigo-500 hover:bg-zinc-800 transition-colors group"
+                        className={`flex items-center gap-3 px-5 py-3.5 hover:bg-[#1c1c1f] transition-colors ${divider}`}
                       >
-                        <div className="w-7 h-7 rounded-full border-2 border-indigo-500 flex items-center justify-center flex-shrink-0">
-                          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                        <div className="w-6 h-6 rounded-full border border-[#9b93f0] flex items-center justify-center flex-shrink-0">
+                          <div className="w-2 h-2 rounded-full bg-[#9b93f0]" />
                         </div>
-                        <span className="flex-1 text-sm font-bold text-zinc-100">
-                          {lesson.title}
-                        </span>
-                        <span className="text-indigo-400 text-sm font-bold group-hover:translate-x-0.5 transition-transform">
-                          →
-                        </span>
+                        <span className="flex-1 text-[13px] text-white">{lesson.title}</span>
+                        <span className="text-[13px] text-[#9b93f0]">→</span>
                       </Link>
                     )
                   }
@@ -221,14 +185,15 @@ export default async function CourseDetailPage({
                   return (
                     <div
                       key={lesson.id}
-                      className="flex items-center gap-3 px-5 py-3.5 bg-zinc-900 cursor-not-allowed"
+                      className={`flex items-center gap-3 px-5 py-3.5 cursor-not-allowed ${divider}`}
                     >
-                      <div className="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0 text-zinc-600 text-xs">
-                        🔒
+                      <div className="w-6 h-6 rounded-full bg-[#1c1c1f] flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
                       </div>
-                      <span className="flex-1 text-sm font-medium text-zinc-600">
-                        {lesson.title}
-                      </span>
+                      <span className="flex-1 text-[13px] text-[#555]">{lesson.title}</span>
                     </div>
                   )
                 })}
@@ -237,6 +202,7 @@ export default async function CourseDetailPage({
           </div>
         ))}
       </div>
+
     </div>
   )
 }
