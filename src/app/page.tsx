@@ -70,7 +70,7 @@ export default async function Home() {
           {tracks.map((track) => {
             const card = (
               <div
-                className={`min-h-[120px] text-left p-5 rounded-xl border transition-colors ${
+                className={`min-h-[132px] text-left p-5 rounded-xl border transition-colors ${
                   track.active
                     ? 'bg-zinc-800 border-zinc-700 hover:border-zinc-500 cursor-pointer'
                     : 'bg-zinc-900 border-zinc-800 cursor-default'
