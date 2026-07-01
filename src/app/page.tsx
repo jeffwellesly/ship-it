@@ -70,7 +70,7 @@ export default async function Home() {
           {tracks.map((track) => {
             const card = (
               <div
-                className={`text-left p-5 rounded-xl border transition-colors ${
+                className={`h-full text-left p-5 rounded-xl border transition-colors ${
                   track.active
                     ? 'bg-zinc-800 border-zinc-700 hover:border-zinc-500 cursor-pointer'
                     : 'bg-zinc-900 border-zinc-800 cursor-default'
@@ -87,9 +87,9 @@ export default async function Home() {
             )
 
             return track.href ? (
-              <Link key={track.title} href={track.href}>{card}</Link>
+              <Link key={track.title} href={track.href} className="block h-full">{card}</Link>
             ) : (
-              <div key={track.title}>{card}</div>
+              <div key={track.title} className="h-full">{card}</div>
             )
           })}
         </div>
