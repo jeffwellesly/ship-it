@@ -16,13 +16,16 @@ function renderInline(text: string): ReactNode[] {
 }
 
 // Parses lesson content:
-//   >> sentence   → pull quote (large, purple left border)
-//   [!] sentence  → callout box (purple-tinted)
-//   **term**      → bold key term inline
-//   blank line    → paragraph break
+//   >> sentence        → pull quote (large, purple left border)
+//   [!] sentence       → callout box (purple-tinted)
+//   **term**           → bold key term inline
+//   ALL CAPS line      → section label (muted, uppercase, small)
+//   2-space indent     → monospace code block
+//   blank line         → paragraph / block break
 function LessonContent({ content }: { content: string }) {
   const blocks: ReactNode[] = []
   let paraLines: string[] = []
+  let codeLines: string[] = []
   let key = 0
 
   const flushPara = () => {
@@ -37,11 +40,24 @@ function LessonContent({ content }: { content: string }) {
     paraLines = []
   }
 
+  const flushCode = () => {
+    if (codeLines.length === 0) return
+    const stripped = codeLines.map(l => l.replace(/^ {2}/, ''))
+    blocks.push(
+      <div key={key++} className="my-3 rounded-lg bg-[#1c1c1f] border border-[#2e2e32] px-4 py-3 overflow-x-auto">
+        {stripped.map((l, i) => (
+          <p key={i} className="text-[13px] font-mono text-[#ccc] leading-relaxed whitespace-pre">{l || ' '}</p>
+        ))}
+      </div>
+    )
+    codeLines = []
+  }
+
   for (const raw of content.split('\n')) {
     const line = raw.trimEnd()
 
     if (line.startsWith('>> ')) {
-      flushPara()
+      flushPara(); flushCode()
       blocks.push(
         <blockquote key={key++} className="my-7 pl-5 border-l-[3px] border-[#7F77DD]">
           <p className="text-[19px] font-medium text-white leading-[1.55]">
@@ -50,7 +66,7 @@ function LessonContent({ content }: { content: string }) {
         </blockquote>
       )
     } else if (line.startsWith('[!] ')) {
-      flushPara()
+      flushPara(); flushCode()
       blocks.push(
         <div
           key={key++}
@@ -78,11 +94,25 @@ function LessonContent({ content }: { content: string }) {
         </div>
       )
     } else if (line === '') {
+      flushPara(); flushCode()
+    } else if (line.startsWith('  ')) {
+      // 2-space indent → code line; flush any pending prose first
       flushPara()
+      codeLines.push(line)
+    } else if (paraLines.length === 0 && codeLines.length === 0 && line.length >= 4 && !/[a-z]/.test(line)) {
+      // Standalone ALL-CAPS line → section label
+      blocks.push(
+        <p key={key++} className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#555] mt-7 mb-1.5">
+          {line}
+        </p>
+      )
     } else {
+      // Regular prose
+      flushCode()
       paraLines.push(line)
     }
   }
+  flushPara(); flushCode()
   flushPara()
 
   return <>{blocks}</>
