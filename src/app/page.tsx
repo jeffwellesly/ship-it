@@ -17,7 +17,7 @@ export default async function Home() {
         </svg>
       ),
       iconColor: 'text-violet-400',
-      title: 'Software dev',
+      title: 'Software Development with Claude Code',
       subtitle: `${moduleCount} modules`,
       active: true,
       href: '/login',
