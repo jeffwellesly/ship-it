@@ -58,6 +58,8 @@ export default async function CourseDetailPage({
   const totalModules = modules.length
   const completedModules = modules.filter((m) => m.complete).length
   const xp = profile?.total_xp ?? 0
+  const defaultOpenIdx = modules.findIndex((m) => !m.complete)
+  const openIdx = defaultOpenIdx === -1 ? modules.length - 1 : defaultOpenIdx
 
   return (
     <div className="min-h-screen bg-[#0c0c0c]">
@@ -103,29 +105,41 @@ export default async function CourseDetailPage({
 
       {/* Module list */}
       <div className="max-w-sm mx-auto px-7 py-6 space-y-3">
-        {modules.map((mod) => (
-          <div key={mod.id} className="bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
-            {/* Module header */}
-            <div className="px-5 py-4 border-b border-[#2a2a2e]">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-[11px] font-medium tracking-[0.06em] text-[#555] mb-0.5">
-                    MODULE {mod.sort_order}
-                  </p>
-                  <h2 className="text-[15px] font-medium text-white leading-snug">{mod.title}</h2>
-                </div>
-                <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 mt-0.5 whitespace-nowrap ${
+        {modules.map((mod, i) => (
+          <details
+            key={mod.id}
+            open={i === openIdx}
+            className="group bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden"
+          >
+            {/* Module header — clickable summary */}
+            <summary className="px-5 py-4 flex items-start justify-between gap-3 cursor-pointer list-none select-none hover:bg-[#1a1a1d] transition-colors">
+              <div className="min-w-0">
+                <p className="text-[11px] font-medium tracking-[0.06em] text-[#555] mb-0.5">
+                  MODULE {mod.sort_order}
+                </p>
+                <h2 className="text-[15px] font-medium text-white leading-snug">{mod.title}</h2>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
+                <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${
                   mod.complete
                     ? 'bg-emerald-900/40 text-emerald-400'
                     : 'bg-[#3C3489]/50 text-[#9b93f0]'
                 }`}>
                   {mod.complete ? '✓ Done' : `${mod.completedCount}/${mod.lessons.length}`}
                 </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                  fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  className="transition-transform duration-200 group-open:rotate-180 flex-shrink-0"
+                  aria-hidden="true"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
               </div>
-            </div>
+            </summary>
 
-            {/* Lessons */}
-            <div>
+            {/* Lessons — visible when open */}
+            <div className="border-t border-[#2a2a2e]">
               {mod.lessons.map((lesson, idx) => {
                 const divider = idx < mod.lessons.length - 1 ? 'border-b border-[#2a2a2e]' : ''
                 return (
@@ -149,7 +163,7 @@ export default async function CourseDetailPage({
                 )
               })}
             </div>
-          </div>
+          </details>
         ))}
       </div>
 
