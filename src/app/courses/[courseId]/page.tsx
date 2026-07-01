@@ -78,6 +78,8 @@ export default async function CourseDetailPage({
   const totalLessons = modules.flatMap((m) => m.lessons).length
   const completedCount = modules.reduce((acc, m) => acc + m.completedCount, 0)
   const pct = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0
+  const totalModules = modules.length
+  const completedModules = modules.filter((m) => m.complete).length
   const xp = profile?.total_xp ?? 0
 
   return (
@@ -112,7 +114,7 @@ export default async function CourseDetailPage({
           <p className="text-[13px] text-[#cfc9f7] mb-5 leading-relaxed">{course.description}</p>
           <div>
             <div className="flex items-center justify-between text-[12px] mb-1.5">
-              <span className="text-[#cfc9f7]">{completedCount} of {totalLessons} lessons</span>
+              <span className="text-[#cfc9f7]">{completedModules} of {totalModules} modules</span>
               <span className="text-white font-medium">{Math.round(pct)}%</span>
             </div>
             <div className="h-1 bg-white/20 rounded-full overflow-hidden">

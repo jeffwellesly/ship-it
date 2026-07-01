@@ -116,6 +116,10 @@ export default async function CoursesPage() {
             const total = allLessons.length
             const completed = allLessons.filter((l) => completedIds.has(l.id)).length
             const pct = total > 0 ? (completed / total) * 100 : 0
+            const totalModules = course.modules.length
+            const completedModules = course.modules.filter(
+              (m) => m.lessons.length > 0 && m.lessons.every((l) => completedIds.has(l.id))
+            ).length
             const currentId = findCurrentLessonId(course.modules, completedIds)
             const allDone = completed === total && total > 0
 
@@ -130,7 +134,7 @@ export default async function CoursesPage() {
                   </div>
                   <div className="min-w-0">
                     <h2 className="text-[15px] font-medium text-white leading-snug">{course.title}</h2>
-                    <p className="text-[12px] text-[#888] mt-0.5">{completed}/{total} lessons</p>
+                    <p className="text-[12px] text-[#888] mt-0.5">{completedModules} of {totalModules} modules</p>
                   </div>
                 </div>
 
