@@ -2,49 +2,26 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 
-type LessonStatus = 'completed' | 'available' | 'locked'
-
 type RawLesson = { id: string; title: string; sort_order: number }
 type RawModule = { id: string; title: string; description: string; sort_order: number; lessons: RawLesson[] }
 
-type LessonWithStatus = RawLesson & { status: LessonStatus }
+type LessonWithStatus = RawLesson & { completed: boolean }
 type ModuleWithStatus = Omit<RawModule, 'lessons'> & {
   lessons: LessonWithStatus[]
-  locked: boolean
   complete: boolean
   completedCount: number
 }
 
 function computeStatuses(rawModules: RawModule[], completedIds: Set<string>): ModuleWithStatus[] {
-  const modules = [...rawModules].sort((a, b) => a.sort_order - b.sort_order)
-  let prevModuleComplete = true
-
-  return modules.map((mod) => {
-    const lessons = [...mod.lessons].sort((a, b) => a.sort_order - b.sort_order)
-    const hasAny = lessons.some((l) => completedIds.has(l.id))
-    const locked = !prevModuleComplete && !hasAny
-
-    let prevDone = true
-    const lessonsWithStatus: LessonWithStatus[] = lessons.map((lesson) => {
-      let status: LessonStatus
-      if (completedIds.has(lesson.id)) {
-        status = 'completed'
-        prevDone = true
-      } else if (locked || !prevDone) {
-        status = 'locked'
-        prevDone = false
-      } else {
-        status = 'available'
-        prevDone = false
-      }
-      return { ...lesson, status }
+  return [...rawModules]
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((mod) => {
+      const lessons = [...mod.lessons]
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map((l) => ({ ...l, completed: completedIds.has(l.id) }))
+      const completedCount = lessons.filter((l) => l.completed).length
+      return { ...mod, lessons, complete: completedCount === lessons.length && lessons.length > 0, completedCount }
     })
-
-    const complete = lessons.every((l) => completedIds.has(l.id))
-    prevModuleComplete = complete
-
-    return { ...mod, lessons: lessonsWithStatus, locked, complete, completedCount: lessons.filter((l) => completedIds.has(l.id)).length }
-  })
 }
 
 export default async function CourseDetailPage({
@@ -127,10 +104,7 @@ export default async function CourseDetailPage({
       {/* Module list */}
       <div className="max-w-sm mx-auto px-7 py-6 space-y-3">
         {modules.map((mod) => (
-          <div
-            key={mod.id}
-            className={`bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden transition-opacity ${mod.locked ? 'opacity-40' : ''}`}
-          >
+          <div key={mod.id} className="bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
             {/* Module header */}
             <div className="px-5 py-4 border-b border-[#2a2a2e]">
               <div className="flex items-start justify-between gap-3">
@@ -143,70 +117,38 @@ export default async function CourseDetailPage({
                 <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 mt-0.5 whitespace-nowrap ${
                   mod.complete
                     ? 'bg-emerald-900/40 text-emerald-400'
-                    : mod.locked
-                      ? 'bg-[#1c1c1f] text-[#555]'
-                      : 'bg-[#3C3489]/50 text-[#9b93f0]'
+                    : 'bg-[#3C3489]/50 text-[#9b93f0]'
                 }`}>
-                  {mod.complete ? '✓ Done' : mod.locked ? 'Locked' : `${mod.completedCount}/${mod.lessons.length}`}
+                  {mod.complete ? '✓ Done' : `${mod.completedCount}/${mod.lessons.length}`}
                 </span>
               </div>
             </div>
 
             {/* Lessons */}
-            {!mod.locked && (
-              <div>
-                {mod.lessons.map((lesson, idx) => {
-                  const notLast = idx < mod.lessons.length - 1
-                  const divider = notLast ? 'border-b border-[#2a2a2e]' : ''
-
-                  if (lesson.status === 'completed') {
-                    return (
-                      <Link
-                        key={lesson.id}
-                        href={`/lessons/${lesson.id}`}
-                        className={`flex items-center gap-3 px-5 py-3.5 hover:bg-[#1c1c1f] transition-colors ${divider}`}
-                      >
-                        <div className="w-6 h-6 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 text-xs flex-shrink-0">✓</div>
-                        <span className="flex-1 text-[13px] text-[#555]">{lesson.title}</span>
-                        <span className="text-[11px] font-medium text-[#3C3489]">+10 XP</span>
-                      </Link>
-                    )
-                  }
-
-                  if (lesson.status === 'available') {
-                    return (
-                      <Link
-                        key={lesson.id}
-                        href={`/lessons/${lesson.id}`}
-                        className={`flex items-center gap-3 px-5 py-3.5 hover:bg-[#1c1c1f] transition-colors ${divider}`}
-                      >
-                        <div className="w-6 h-6 rounded-full border border-[#9b93f0] flex items-center justify-center flex-shrink-0">
-                          <div className="w-2 h-2 rounded-full bg-[#9b93f0]" />
-                        </div>
-                        <span className="flex-1 text-[13px] text-white">{lesson.title}</span>
-                        <span className="text-[13px] text-[#9b93f0]">→</span>
-                      </Link>
-                    )
-                  }
-
-                  // locked
-                  return (
-                    <div
-                      key={lesson.id}
-                      className={`flex items-center gap-3 px-5 py-3.5 cursor-not-allowed ${divider}`}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-[#1c1c1f] flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
+            <div>
+              {mod.lessons.map((lesson, idx) => {
+                const divider = idx < mod.lessons.length - 1 ? 'border-b border-[#2a2a2e]' : ''
+                return (
+                  <Link
+                    key={lesson.id}
+                    href={`/lessons/${lesson.id}`}
+                    className={`flex items-center gap-3 px-5 py-3.5 hover:bg-[#1c1c1f] transition-colors ${divider}`}
+                  >
+                    {lesson.completed ? (
+                      <div className="w-6 h-6 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 text-xs flex-shrink-0">✓</div>
+                    ) : (
+                      <div className="w-6 h-6 rounded-full border border-[#9b93f0] flex items-center justify-center flex-shrink-0">
+                        <div className="w-2 h-2 rounded-full bg-[#9b93f0]" />
                       </div>
-                      <span className="flex-1 text-[13px] text-[#555]">{lesson.title}</span>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
+                    )}
+                    <span className={`flex-1 text-[13px] ${lesson.completed ? 'text-[#555]' : 'text-white'}`}>{lesson.title}</span>
+                    {lesson.completed
+                      ? <span className="text-[11px] font-medium text-[#3C3489]">+10 XP</span>
+                      : <span className="text-[13px] text-[#9b93f0]">→</span>}
+                  </Link>
+                )
+              })}
+            </div>
           </div>
         ))}
       </div>

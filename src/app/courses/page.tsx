@@ -15,24 +15,12 @@ type CourseRow = {
 
 function findCurrentLessonId(modules: ModuleRef[], completedIds: Set<string>): string | null {
   const sorted = [...modules].sort((a, b) => a.sort_order - b.sort_order)
-  let prevModuleComplete = true
-
   for (const mod of sorted) {
     const lessons = [...mod.lessons].sort((a, b) => a.sort_order - b.sort_order)
-    const hasAny = lessons.some((l) => completedIds.has(l.id))
-    const locked = !prevModuleComplete && !hasAny
-
-    if (!locked) {
-      let prevDone = true
-      for (const lesson of lessons) {
-        if (!completedIds.has(lesson.id) && prevDone) return lesson.id
-        prevDone = completedIds.has(lesson.id)
-      }
+    for (const lesson of lessons) {
+      if (!completedIds.has(lesson.id)) return lesson.id
     }
-
-    prevModuleComplete = lessons.every((l) => completedIds.has(l.id))
   }
-
   return null
 }
 
