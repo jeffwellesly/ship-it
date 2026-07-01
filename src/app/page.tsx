@@ -2,13 +2,12 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function Home() {
-  // Fetch lesson count for the live course (public RLS allows this without auth)
   const supabase = await createClient()
   const { count } = await supabase
-    .from('lessons')
+    .from('modules')
     .select('*', { count: 'exact', head: true })
 
-  const lessonCount = count ?? 0
+  const moduleCount = count ?? 0
 
   const tracks = [
     {
@@ -19,7 +18,7 @@ export default async function Home() {
       ),
       iconColor: 'text-violet-400',
       title: 'Software dev',
-      subtitle: `${lessonCount} lessons`,
+      subtitle: `${moduleCount} modules`,
       active: true,
       href: '/login',
     },
