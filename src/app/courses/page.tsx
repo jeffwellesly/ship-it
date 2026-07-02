@@ -13,16 +13,6 @@ type CourseRow = {
   modules: ModuleRef[]
 }
 
-function findCurrentLessonId(modules: ModuleRef[], completedIds: Set<string>): string | null {
-  const sorted = [...modules].sort((a, b) => a.sort_order - b.sort_order)
-  for (const mod of sorted) {
-    const lessons = [...mod.lessons].sort((a, b) => a.sort_order - b.sort_order)
-    for (const lesson of lessons) {
-      if (!completedIds.has(lesson.id)) return lesson.id
-    }
-  }
-  return null
-}
 
 const RocketIcon = ({ color = 'white', size = 20 }: { color?: string; size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -88,7 +78,6 @@ export default async function CoursesPage() {
             const completedModules = course.modules.filter(
               (m) => m.lessons.length > 0 && m.lessons.every((l) => completedIds.has(l.id))
             ).length
-            const currentId = findCurrentLessonId(course.modules, completedIds)
             const allDone = completed === total && total > 0
 
             return (
@@ -119,18 +108,11 @@ export default async function CoursesPage() {
                 </div>
 
                 <Link
-                  href={currentId ? `/lessons/${currentId}` : `/courses/${course.id}`}
-                  className="block w-full text-center py-[11px] rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity mb-2"
+                  href={`/courses/${course.id}`}
+                  className="block w-full text-center py-[11px] rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity"
                   style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
                 >
                   {completed === 0 ? 'Start course →' : allDone ? 'Review course' : 'Continue →'}
-                </Link>
-
-                <Link
-                  href={`/courses/${course.id}`}
-                  className="block w-full text-center text-[12px] text-[#555] hover:text-[#888] transition-colors"
-                >
-                  All modules
                 </Link>
               </div>
             )
