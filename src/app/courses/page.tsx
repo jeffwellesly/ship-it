@@ -32,17 +32,6 @@ const RocketIcon = ({ color = 'white', size = 20 }: { color?: string; size?: num
   </svg>
 )
 
-const comingSoon = [
-  {
-    title: 'AI for everyone',
-    description: 'Understand how AI models work, when to use them, and how to build with them.',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
-      </svg>
-    ),
-  },
-]
 
 export default async function CoursesPage() {
   const supabase = await createClient()
@@ -147,21 +136,6 @@ export default async function CoursesPage() {
             )
           })}
 
-          {/* Coming soon courses */}
-          {comingSoon.map((course) => (
-            <div key={course.title} className="bg-[#151517] border border-[#2a2a2e] rounded-2xl p-5">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-[10px] bg-[#1c1c1f] border border-[#2e2e32] flex items-center justify-center flex-shrink-0">
-                  {course.icon}
-                </div>
-                <div className="min-w-0">
-                  <h2 className="text-[15px] font-medium text-[#555] leading-snug">{course.title}</h2>
-                  <p className="text-[12px] text-[#3a3a3a] mt-0.5">Coming soon</p>
-                </div>
-              </div>
-              <p className="text-[12px] text-[#3a3a3a] leading-relaxed">{course.description}</p>
-            </div>
-          ))}
 
         </div>
       </div>

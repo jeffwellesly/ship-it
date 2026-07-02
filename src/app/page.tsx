@@ -3,18 +3,15 @@ import { createClient } from '@/lib/supabase/server'
 
 export default async function Home() {
   const supabase = await createClient()
-  const { data: softwareCourse } = await supabase
-    .from('courses')
-    .select('id')
-    .eq('sort_order', 1)
-    .single()
+  const [{ data: softwareCourse }, { data: aimlCourse }] = await Promise.all([
+    supabase.from('courses').select('id').eq('sort_order', 1).single(),
+    supabase.from('courses').select('id').eq('sort_order', 2).single(),
+  ])
 
-  const { count } = await supabase
-    .from('modules')
-    .select('*', { count: 'exact', head: true })
-    .eq('course_id', softwareCourse?.id ?? '')
-
-  const moduleCount = count ?? 0
+  const [{ count: swCount }, { count: aimlCount }] = await Promise.all([
+    supabase.from('modules').select('*', { count: 'exact', head: true }).eq('course_id', softwareCourse?.id ?? ''),
+    supabase.from('modules').select('*', { count: 'exact', head: true }).eq('course_id', aimlCourse?.id ?? ''),
+  ])
 
   const tracks = [
     {
@@ -25,7 +22,7 @@ export default async function Home() {
       ),
       iconColor: 'text-violet-400',
       title: 'Software Development with Claude Code',
-      subtitle: `${moduleCount} modules`,
+      subtitle: `${swCount ?? 0} modules`,
       active: true,
       href: '/login',
     },
@@ -36,22 +33,10 @@ export default async function Home() {
         </svg>
       ),
       iconColor: 'text-violet-400',
-      title: 'ML for everyone',
-      subtitle: '1 module',
+      title: 'AI/ML for Everyone',
+      subtitle: `${aimlCount ?? 0} modules`,
       active: true,
       href: '/login',
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
-        </svg>
-      ),
-      iconColor: 'text-zinc-500',
-      title: 'AI for everyone',
-      subtitle: 'Coming soon',
-      active: false,
-      href: null,
     },
   ]
 
@@ -73,7 +58,7 @@ export default async function Home() {
         </p>
 
         {/* Course cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
           {tracks.map((track) => {
             const card = (
               <div
