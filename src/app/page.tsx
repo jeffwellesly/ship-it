@@ -86,13 +86,6 @@ export default async function Home() {
           })}
         </div>
 
-        {/* Sign in */}
-        <p className="text-sm text-zinc-600">
-          Already have an account?{' '}
-          <Link href="/login" className="text-zinc-400 hover:text-white transition-colors">
-            Sign in
-          </Link>
-        </p>
 
       </div>
     </div>
