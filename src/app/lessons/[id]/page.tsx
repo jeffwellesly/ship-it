@@ -218,12 +218,12 @@ export default async function LessonPage({
 
             {/* Breadcrumb */}
             {mod && (
-              <div className="flex items-center gap-1.5 mb-4">
-                <span className="text-[11px] font-medium tracking-[0.08em] text-[#7F77DD] uppercase">
+              <div className="flex items-center gap-1.5 mb-4 min-w-0">
+                <span className="text-[11px] font-medium tracking-[0.08em] text-[#7F77DD] uppercase whitespace-nowrap flex-shrink-0">
                   Module {mod.sort_order}
                 </span>
-                <span className="text-[11px] text-[#333]">·</span>
-                <span className="text-[11px] text-[#555] truncate">{mod.title}</span>
+                <span className="text-[11px] text-[#333] flex-shrink-0">·</span>
+                <span className="text-[11px] text-[#555] truncate min-w-0">{mod.title}</span>
               </div>
             )}
 
