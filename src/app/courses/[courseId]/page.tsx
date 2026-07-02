@@ -121,12 +121,9 @@ export default async function CourseDetailPage({
       {/* Module list */}
       <div className="max-w-sm mx-auto px-7 py-5 flex flex-col gap-2">
         {modules.map((mod, i) => {
-          const isOpen = i === openIdx
-
           return (
             <details
               key={mod.id}
-              open={isOpen}
               className="group bg-[#151517] border border-[#2a2a2e] rounded-[14px] overflow-hidden"
             >
               <summary className="px-[18px] py-4 flex items-center justify-between gap-3 cursor-pointer list-none select-none hover:bg-[#1a1a1d] transition-colors">
