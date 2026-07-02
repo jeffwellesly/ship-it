@@ -33,7 +33,7 @@ export default async function Home() {
         </svg>
       ),
       iconColor: 'text-violet-400',
-      title: 'AI/ML for Everyone',
+      title: 'AI/ML for Builders',
       subtitle: `${aimlCount ?? 0} modules`,
       active: true,
       href: '/login',
