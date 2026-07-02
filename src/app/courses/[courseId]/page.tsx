@@ -145,7 +145,9 @@ export default async function CourseDetailPage({
                     }
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[14px] font-medium text-white leading-snug truncate">{mod.title}</p>
+                    <p className="text-[14px] font-medium text-white leading-snug">
+                      {mod.title.replace(/^Module\s+\d+\s*[:\-]\s*/i, '')}
+                    </p>
                     <p className="text-[12px] text-[#555] mt-0.5">{mod.lessons.length} lessons</p>
                   </div>
                 </div>
