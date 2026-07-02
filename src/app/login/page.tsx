@@ -9,7 +9,6 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -22,21 +21,11 @@ export default function LoginPage() {
     setError(null)
     setMessage(null)
 
-    if (mode === 'signup') {
-      const { error } = await supabase.auth.signUp({ email, password })
-      if (error) {
-        setError(error.message)
-      } else {
-        setMessage('Check your email for a confirmation link.')
-      }
+    const { error } = await supabase.auth.signUp({ email, password })
+    if (error) {
+      setError(error.message)
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setError(error.message)
-      } else {
-        router.push('/dashboard')
-        router.refresh()
-      }
+      setMessage('Check your email for a confirmation link.')
     }
 
     setLoading(false)
@@ -91,19 +80,9 @@ export default function LoginPage() {
       {/* Card */}
       <div className="w-full max-w-[340px] bg-[#151517] border border-[#2a2a2e] rounded-2xl px-7 py-8">
 
-        <h1 className="text-[22px] font-medium text-white mb-1">
-          {mode === 'signin' ? 'Welcome back' : 'Create an account'}
+        <h1 className="text-[22px] font-medium text-white mb-6">
+          Create an account
         </h1>
-        <p className="text-[13px] text-[#888] mb-6">
-          {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-          <button
-            type="button"
-            onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(null); setMessage(null) }}
-            className="font-medium text-[#9b93f0] hover:opacity-80 transition-opacity"
-          >
-            {mode === 'signin' ? 'Sign up' : 'Sign in'}
-          </button>
-        </p>
 
         {error && (
           <div className="mb-4 rounded-xl bg-red-950/50 border border-red-800/60 px-4 py-3 text-[13px] text-red-300">
@@ -151,7 +130,7 @@ export default function LoginPage() {
             className="w-full rounded-lg py-[11px] text-[14px] font-medium text-white disabled:opacity-50 transition-opacity hover:opacity-90"
             style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
           >
-            {loading ? 'Loading…' : mode === 'signin' ? 'Sign in' : 'Sign up'}
+            {loading ? 'Loading…' : 'Sign up'}
           </button>
         </form>
 
