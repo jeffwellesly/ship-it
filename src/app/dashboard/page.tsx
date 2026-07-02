@@ -22,6 +22,7 @@ export default async function DashboardPage() {
 
   const xp = profile?.total_xp ?? 0
   const name = profile?.display_name ?? user.email
+  const isGuest = user.is_anonymous ?? false
 
   return (
     <div className="min-h-screen bg-[#0c0c0c]">
@@ -45,6 +46,18 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Guest banner */}
+      {isGuest && (
+        <div className="max-w-sm mx-auto px-7 pt-5">
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-[#2e2e32] bg-[#1c1c1f] px-4 py-3">
+            <p className="text-[13px] text-[#888]">You&apos;re browsing as a guest. Sign up to save your progress.</p>
+            <Link href="/login" className="shrink-0 text-[13px] font-medium text-[#9b93f0] hover:opacity-80 transition-opacity">
+              Sign up →
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       <div className="max-w-sm mx-auto px-7 py-7">
