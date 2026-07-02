@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
 
+type LessonRef = { id: string; title: string; sort_order: number }
+type ModuleRef = { id: string; sort_order: number; lessons: LessonRef[] }
+type CourseRef = { id: string; sort_order: number; modules: ModuleRef[] }
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const {
@@ -11,18 +15,45 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: userBadges }] = await Promise.all([
+  const [{ data: profile }, { data: userBadges }, { data: progress }, { data: rawCourses }] = await Promise.all([
     supabase.from('profiles').select('total_xp, display_name').eq('id', user.id).single(),
+    supabase.from('user_badges').select('id').eq('user_id', user.id),
+    supabase.from('user_progress').select('lesson_id').eq('user_id', user.id),
     supabase
-      .from('user_badges')
-      .select('earned_at, badges(name, description, icon)')
-      .eq('user_id', user.id)
-      .order('earned_at'),
+      .from('courses')
+      .select('id, sort_order, modules(id, sort_order, lessons(id, title, sort_order))')
+      .order('sort_order'),
   ])
 
   const xp = profile?.total_xp ?? 0
   const name = profile?.display_name ?? user.email
   const isGuest = user.is_anonymous ?? false
+  const badgeCount = userBadges?.length ?? 0
+
+  const completedIds = new Set(progress?.map((p) => p.lesson_id) ?? [])
+  const doneCount = completedIds.size
+
+  const courses = ((rawCourses as unknown as CourseRef[]) ?? [])
+    .slice()
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((c) => ({
+      ...c,
+      modules: [...c.modules]
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map((m) => ({ ...m, lessons: [...m.lessons].sort((a, b) => a.sort_order - b.sort_order) })),
+    }))
+
+  let nextUp: { lessonId: string; lessonTitle: string; moduleNumber: number; lessonNumber: number } | null = null
+  findNext: for (const course of courses) {
+    for (const mod of course.modules) {
+      for (const lesson of mod.lessons) {
+        if (!completedIds.has(lesson.id)) {
+          nextUp = { lessonId: lesson.id, lessonTitle: lesson.title, moduleNumber: mod.sort_order, lessonNumber: lesson.sort_order }
+          break findNext
+        }
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0c0c0c]">
@@ -62,56 +93,48 @@ export default async function DashboardPage() {
       {/* Content */}
       <div className="max-w-sm mx-auto px-7 py-7">
 
-        {/* Welcome */}
-        <h1 className="text-[26px] font-medium text-white mb-1">Welcome back</h1>
-        <p className="text-[13px] text-[#888] mb-6">{name}</p>
+        {/* Name */}
+        <h1 className="text-[26px] font-medium text-white mb-6 truncate">{name}</h1>
 
-        {/* XP card */}
-        <div
-          className="rounded-2xl p-6 mb-5"
-          style={{ background: 'linear-gradient(135deg,#7F77DD,#3C3489)' }}
-        >
-          <p className="text-[12px] font-medium tracking-[0.06em] text-[#cfc9f7] mb-1.5">TOTAL XP</p>
-          <p className="text-[40px] font-medium text-white leading-none mb-1.5">{xp}</p>
-          <p className="text-[13px] text-[#cfc9f7]">Keep completing lessons to earn more.</p>
+        {/* Stat tiles */}
+        <div className="grid grid-cols-3 gap-3 mb-5">
+          <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl py-5 text-center">
+            <p className="text-[26px] font-semibold text-white leading-none mb-1.5">{xp}</p>
+            <p className="text-[11px] font-medium tracking-[0.04em] text-[#666] uppercase">XP</p>
+          </div>
+          <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl py-5 text-center">
+            <p className="text-[26px] font-semibold text-white leading-none mb-1.5">{badgeCount}</p>
+            <p className="text-[11px] font-medium tracking-[0.04em] text-[#666] uppercase">Badges</p>
+          </div>
+          <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl py-5 text-center">
+            <p className="text-[26px] font-semibold text-white leading-none mb-1.5">{doneCount}</p>
+            <p className="text-[11px] font-medium tracking-[0.04em] text-[#666] uppercase">Done</p>
+          </div>
         </div>
 
-        {/* Badges */}
+        {/* Next up */}
+        <p className="text-[12px] font-medium tracking-[0.06em] text-[#666] uppercase mb-2.5">Next up</p>
         <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl p-5 mb-5">
-          <p className="text-[12px] font-medium tracking-[0.06em] text-[#888] mb-3.5">BADGES</p>
-          {userBadges && userBadges.length > 0 ? (
-            <div className="space-y-2.5">
-              {userBadges.map((ub) => {
-                const badge = ub.badges as unknown as { name: string; description: string; icon: string } | null
-                if (!badge) return null
-                return (
-                  <div
-                    key={badge.name}
-                    className="flex items-center gap-3 bg-[#1c1c1f] border border-[#2e2e32] rounded-xl px-3.5 py-3"
-                  >
-                    <div className="w-[34px] h-[34px] rounded-[10px] bg-[#3C3489] flex items-center justify-center flex-shrink-0 text-lg">
-                      {badge.icon}
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-medium text-white">{badge.name}</p>
-                      <p className="text-[12px] text-[#888]">{badge.description}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+          {nextUp ? (
+            <>
+              <p className="text-[15px] font-medium text-white leading-snug mb-1">{nextUp.lessonTitle}</p>
+              <p className="text-[12px] text-[#666]">Module {nextUp.moduleNumber} · Lesson {nextUp.lessonNumber}</p>
+            </>
           ) : (
-            <p className="text-[13px] text-[#555]">Complete lessons to earn badges.</p>
+            <>
+              <p className="text-[15px] font-medium text-white leading-snug mb-1">All caught up!</p>
+              <p className="text-[12px] text-[#666]">You&apos;ve completed every lesson.</p>
+            </>
           )}
         </div>
 
         {/* CTA */}
         <Link
-          href="/courses"
+          href={nextUp ? `/lessons/${nextUp.lessonId}` : '/courses'}
           className="block w-full text-center py-[13px] rounded-xl text-[14px] font-medium text-white mb-4 hover:opacity-90 transition-opacity"
           style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
         >
-          Continue learning →
+          {nextUp ? 'Continue →' : 'Review courses →'}
         </Link>
 
         <LogoutButton />
