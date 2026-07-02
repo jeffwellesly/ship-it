@@ -9,6 +9,7 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -21,11 +22,21 @@ export default function LoginPage() {
     setError(null)
     setMessage(null)
 
-    const { error } = await supabase.auth.signUp({ email, password })
-    if (error) {
-      setError(error.message)
+    if (mode === 'signup') {
+      const { error } = await supabase.auth.signUp({ email, password })
+      if (error) {
+        setError(error.message)
+      } else {
+        setMessage('Check your email for a confirmation link.')
+      }
     } else {
-      setMessage('Check your email for a confirmation link.')
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        setError(error.message)
+      } else {
+        router.push('/dashboard')
+        router.refresh()
+      }
     }
 
     setLoading(false)
@@ -78,25 +89,37 @@ export default function LoginPage() {
       </Link>
 
       {/* Card */}
-      <div className="w-full max-w-[360px] bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
+      <div className="w-full max-w-[360px] bg-[#111113] border border-[#2a2a2e] rounded-2xl overflow-hidden">
 
-        {/* Account section */}
+        {/* Guest CTA — primary */}
         <div className="px-7 pt-7 pb-6">
-          <h1 className="text-[20px] font-medium text-white mb-1">Create an account</h1>
-          <p className="text-[13px] text-[#666] mb-4">Save your progress, earn XP and badges.</p>
+          <h1 className="text-[20px] font-medium text-white mb-1">Try it now — no sign up</h1>
+          <p className="text-[13px] text-[#666] mb-5">Explore lessons, earn XP and badges instantly.</p>
 
-          {/* Perks */}
-          <div className="flex gap-2 mb-5">
-            <span className="flex items-center gap-1.5 rounded-full bg-[#1c1c1f] border border-[#2e2e32] px-2.5 py-1 text-[11px] text-[#888]">
-              <span className="text-[#FAC775]">⚡</span> XP &amp; streaks
-            </span>
-            <span className="flex items-center gap-1.5 rounded-full bg-[#1c1c1f] border border-[#2e2e32] px-2.5 py-1 text-[11px] text-[#888]">
-              <span>🏅</span> Badges
-            </span>
-            <span className="flex items-center gap-1.5 rounded-full bg-[#1c1c1f] border border-[#2e2e32] px-2.5 py-1 text-[11px] text-[#888]">
-              <span>📈</span> Progress
-            </span>
-          </div>
+          <button
+            type="button"
+            onClick={handleGuest}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2.5 rounded-xl py-3 text-[15px] font-medium text-white disabled:opacity-50 hover:opacity-90 transition-opacity"
+            style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
+          >
+            {/* Play icon */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="white" stroke="none" aria-hidden="true">
+              <polygon points="5,3 19,12 5,21" />
+            </svg>
+            Continue as guest
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 px-7">
+          <div className="flex-1 h-px bg-[#2a2a2e]" />
+          <span className="text-[10px] font-semibold tracking-[0.12em] text-[#3a3a3e] uppercase">Save Progress</span>
+          <div className="flex-1 h-px bg-[#2a2a2e]" />
+        </div>
+
+        {/* Sign-in form — secondary */}
+        <div className="px-7 pt-5 pb-7">
 
           {error && (
             <div className="mb-4 rounded-xl bg-red-950/50 border border-red-800/60 px-4 py-3 text-[13px] text-red-300">
@@ -131,16 +154,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg py-[11px] text-[14px] font-medium text-white disabled:opacity-50 transition-opacity hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
+              className="w-full rounded-lg border border-[#7F77DD]/60 py-[11px] text-[14px] font-medium text-[#9b93f0] hover:bg-[#7F77DD]/10 disabled:opacity-50 transition-colors"
             >
-              {loading ? 'Loading…' : 'Sign up'}
+              {loading ? 'Loading…' : mode === 'signin' ? 'Sign in' : 'Sign up'}
             </button>
           </form>
 
           <div className="my-4 flex items-center gap-2.5">
             <div className="flex-1 h-px bg-[#2a2a2e]" />
-            <span className="text-[12px] text-[#444]">or</span>
+            <span className="text-[12px] text-[#333]">or</span>
             <div className="flex-1 h-px bg-[#2a2a2e]" />
           </div>
 
@@ -148,33 +170,30 @@ export default function LoginPage() {
             type="button"
             onClick={handleGitHub}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 rounded-lg border border-[#2e2e32] bg-[#1c1c1f] hover:bg-[#222225] py-2.5 text-[14px] text-[#ddd] disabled:opacity-50 transition-colors"
+            className="w-full flex items-center justify-center gap-2 rounded-lg border border-[#2a2a2e] bg-[#1a1a1c] hover:bg-[#202023] py-2.5 text-[14px] text-[#888] disabled:opacity-50 transition-colors"
           >
-            <svg viewBox="0 0 24 24" className="h-[17px] w-[17px] fill-current" aria-hidden="true">
+            <svg viewBox="0 0 24 24" className="h-[16px] w-[16px] fill-current" aria-hidden="true">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12" />
             </svg>
             Continue with GitHub
           </button>
-        </div>
 
-        {/* Guest section — visually separated */}
-        <div className="border-t border-[#2a2a2e] bg-[#111113] px-7 py-5">
-          <p className="text-[12px] text-[#555] mb-3">Just want to explore first?</p>
-          <button
-            type="button"
-            onClick={handleGuest}
-            disabled={loading}
-            className="w-full flex items-center justify-between rounded-lg border border-[#2e2e32] bg-[#1c1c1f] hover:bg-[#222225] hover:border-[#3a3a3e] px-4 py-3 disabled:opacity-50 transition-colors"
-          >
-            <div className="text-left">
-              <p className="text-[13px] font-medium text-[#ccc]">Continue as guest</p>
-              <p className="text-[11px] text-[#555] mt-0.5">No sign-up needed — progress won&apos;t be saved</p>
-            </div>
-            <span className="text-[#444] text-[13px] ml-3">→</span>
-          </button>
+          <p className="mt-5 text-center text-[12px] text-[#444]">
+            {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+            <button
+              type="button"
+              onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(null); setMessage(null) }}
+              className="text-[#666] hover:text-[#9b93f0] transition-colors"
+            >
+              {mode === 'signin' ? 'Sign up' : 'Sign in'}
+            </button>
+          </p>
         </div>
-
       </div>
+
+      {/* Footnote */}
+      <p className="mt-5 text-[11px] text-[#333]">Guest progress isn&apos;t saved between sessions.</p>
+
     </div>
   )
 }
