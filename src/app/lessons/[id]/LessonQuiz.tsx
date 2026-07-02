@@ -16,9 +16,10 @@ type Props = {
   questions: Question[]
   alreadyCompleted: boolean
   nextLessonId?: string | null
+  isGuest?: boolean
 }
 
-function CompletionBanner({ newBadges, nextLessonId }: { newBadges: NewBadge[]; nextLessonId?: string | null }) {
+function CompletionBanner({ newBadges, nextLessonId, isGuest }: { newBadges: NewBadge[]; nextLessonId?: string | null; isGuest?: boolean }) {
   return (
     <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
       <div className="px-5 py-4 border-b border-[#2a2a2e]">
@@ -40,6 +41,20 @@ function CompletionBanner({ newBadges, nextLessonId }: { newBadges: NewBadge[]; 
           </Link>
         )}
       </div>
+      {isGuest && (
+        <div className="px-5 py-4 border-t border-[#2a2a2e] flex items-center justify-between gap-4">
+          <div>
+            <p className="text-[13px] font-medium text-white">Save your progress</p>
+            <p className="text-[12px] text-[#888] mt-0.5">Your XP and streaks are lost when you close the tab.</p>
+          </div>
+          <Link
+            href="/login"
+            className="shrink-0 px-4 py-2 rounded-lg border border-[#7F77DD]/50 text-[13px] font-medium text-[#9b93f0] hover:bg-[#7F77DD]/10 transition-colors"
+          >
+            Sign up free →
+          </Link>
+        </div>
+      )}
       {newBadges.map((badge) => (
         <div
           key={badge.name}
@@ -76,7 +91,7 @@ function AlreadyCompletedBanner({ nextLessonId, hasQuestions }: { nextLessonId?:
   )
 }
 
-export default function LessonQuiz({ lessonId, questions, alreadyCompleted, nextLessonId }: Props) {
+export default function LessonQuiz({ lessonId, questions, alreadyCompleted, nextLessonId, isGuest }: Props) {
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [completed, setCompleted] = useState(alreadyCompleted)
@@ -141,7 +156,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
     return (
       <div className="mt-5">
         {completed && !alreadyCompleted && (
-          <CompletionBanner newBadges={newBadges} nextLessonId={nextLessonId} />
+          <CompletionBanner newBadges={newBadges} nextLessonId={nextLessonId} isGuest={isGuest} />
         )}
         {completed && alreadyCompleted && (
           <AlreadyCompletedBanner nextLessonId={nextLessonId} hasQuestions={false} />
@@ -171,7 +186,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
 
       {completed && !alreadyCompleted && (
         <div className="mb-5">
-          <CompletionBanner newBadges={newBadges} nextLessonId={nextLessonId} />
+          <CompletionBanner newBadges={newBadges} nextLessonId={nextLessonId} isGuest={isGuest} />
         </div>
       )}
       {completed && alreadyCompleted && (

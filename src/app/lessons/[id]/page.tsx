@@ -237,6 +237,7 @@ export default async function LessonPage({
             questions={questions ?? []}
             alreadyCompleted={alreadyCompleted}
             nextLessonId={nextLessonId}
+            isGuest={user.is_anonymous ?? false}
           />
         </div>
 
