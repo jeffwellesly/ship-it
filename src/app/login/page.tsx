@@ -100,13 +100,9 @@ export default function LoginPage() {
             type="button"
             onClick={handleGuest}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2.5 rounded-xl py-3 text-[15px] font-medium text-white disabled:opacity-50 hover:opacity-90 transition-opacity"
+            className="w-full rounded-xl py-3 text-[15px] font-medium text-white disabled:opacity-50 hover:opacity-90 transition-opacity"
             style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
           >
-            {/* Play icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="white" stroke="none" aria-hidden="true">
-              <polygon points="5,3 19,12 5,21" />
-            </svg>
             Continue as guest
           </button>
         </div>
