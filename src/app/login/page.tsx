@@ -78,90 +78,103 @@ export default function LoginPage() {
       </Link>
 
       {/* Card */}
-      <div className="w-full max-w-[340px] bg-[#151517] border border-[#2a2a2e] rounded-2xl px-7 py-8">
+      <div className="w-full max-w-[360px] bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
 
-        <h1 className="text-[22px] font-medium text-white mb-6">
-          Create an account
-        </h1>
+        {/* Account section */}
+        <div className="px-7 pt-7 pb-6">
+          <h1 className="text-[20px] font-medium text-white mb-1">Create an account</h1>
+          <p className="text-[13px] text-[#666] mb-4">Save your progress, earn XP and badges.</p>
 
-        {error && (
-          <div className="mb-4 rounded-xl bg-red-950/50 border border-red-800/60 px-4 py-3 text-[13px] text-red-300">
-            {error}
+          {/* Perks */}
+          <div className="flex gap-2 mb-5">
+            <span className="flex items-center gap-1.5 rounded-full bg-[#1c1c1f] border border-[#2e2e32] px-2.5 py-1 text-[11px] text-[#888]">
+              <span className="text-[#FAC775]">⚡</span> XP &amp; streaks
+            </span>
+            <span className="flex items-center gap-1.5 rounded-full bg-[#1c1c1f] border border-[#2e2e32] px-2.5 py-1 text-[11px] text-[#888]">
+              <span>🏅</span> Badges
+            </span>
+            <span className="flex items-center gap-1.5 rounded-full bg-[#1c1c1f] border border-[#2e2e32] px-2.5 py-1 text-[11px] text-[#888]">
+              <span>📈</span> Progress
+            </span>
           </div>
-        )}
-        {message && (
-          <div className="mb-4 rounded-xl bg-emerald-950/50 border border-emerald-800/60 px-4 py-3 text-[13px] text-emerald-300">
-            {message}
-          </div>
-        )}
 
-        <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="email" className="block text-[13px] text-[#aaa] mb-1.5">
-              Email
-            </label>
+          {error && (
+            <div className="mb-4 rounded-xl bg-red-950/50 border border-red-800/60 px-4 py-3 text-[13px] text-red-300">
+              {error}
+            </div>
+          )}
+          {message && (
+            <div className="mb-4 rounded-xl bg-emerald-950/50 border border-emerald-800/60 px-4 py-3 text-[13px] text-emerald-300">
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={handleEmailSubmit} className="flex flex-col gap-3">
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="you@example.com"
-              className="w-full rounded-lg border border-[#2e2e32] bg-[#1c1c1f] px-3 py-2.5 text-[14px] text-zinc-100 placeholder-[#555] focus:outline-none focus:ring-1 focus:ring-[#7F77DD] focus:border-[#7F77DD]"
+              placeholder="Email"
+              className="w-full rounded-lg border border-[#2e2e32] bg-[#1c1c1f] px-3 py-2.5 text-[14px] text-zinc-100 placeholder-[#444] focus:outline-none focus:ring-1 focus:ring-[#7F77DD] focus:border-[#7F77DD]"
             />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-[13px] text-[#aaa] mb-1.5">
-              Password
-            </label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="••••••••"
-              className="w-full rounded-lg border border-[#2e2e32] bg-[#1c1c1f] px-3 py-2.5 text-[14px] text-zinc-100 placeholder-[#555] focus:outline-none focus:ring-1 focus:ring-[#7F77DD] focus:border-[#7F77DD]"
+              placeholder="Password"
+              className="w-full rounded-lg border border-[#2e2e32] bg-[#1c1c1f] px-3 py-2.5 text-[14px] text-zinc-100 placeholder-[#444] focus:outline-none focus:ring-1 focus:ring-[#7F77DD] focus:border-[#7F77DD]"
             />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg py-[11px] text-[14px] font-medium text-white disabled:opacity-50 transition-opacity hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
-          >
-            {loading ? 'Loading…' : 'Sign up'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg py-[11px] text-[14px] font-medium text-white disabled:opacity-50 transition-opacity hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
+            >
+              {loading ? 'Loading…' : 'Sign up'}
+            </button>
+          </form>
 
-        <div className="my-5 flex items-center gap-2.5">
-          <div className="flex-1 h-px bg-[#2a2a2e]" />
-          <span className="text-[12px] text-[#555]">or</span>
-          <div className="flex-1 h-px bg-[#2a2a2e]" />
+          <div className="my-4 flex items-center gap-2.5">
+            <div className="flex-1 h-px bg-[#2a2a2e]" />
+            <span className="text-[12px] text-[#444]">or</span>
+            <div className="flex-1 h-px bg-[#2a2a2e]" />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGitHub}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 rounded-lg border border-[#2e2e32] bg-[#1c1c1f] hover:bg-[#222225] py-2.5 text-[14px] text-[#ddd] disabled:opacity-50 transition-colors"
+          >
+            <svg viewBox="0 0 24 24" className="h-[17px] w-[17px] fill-current" aria-hidden="true">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12" />
+            </svg>
+            Continue with GitHub
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={handleGitHub}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2 rounded-lg border border-[#2e2e32] bg-[#1c1c1f] hover:bg-[#222225] py-2.5 text-[14px] text-[#ddd] disabled:opacity-50 transition-colors"
-        >
-          <svg viewBox="0 0 24 24" className="h-[17px] w-[17px] fill-current" aria-hidden="true">
-            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12" />
-          </svg>
-          Continue with GitHub
-        </button>
+        {/* Guest section — visually separated */}
+        <div className="border-t border-[#2a2a2e] bg-[#111113] px-7 py-5">
+          <p className="text-[12px] text-[#555] mb-3">Just want to explore first?</p>
+          <button
+            type="button"
+            onClick={handleGuest}
+            disabled={loading}
+            className="w-full flex items-center justify-between rounded-lg border border-[#2e2e32] bg-[#1c1c1f] hover:bg-[#222225] hover:border-[#3a3a3e] px-4 py-3 disabled:opacity-50 transition-colors"
+          >
+            <div className="text-left">
+              <p className="text-[13px] font-medium text-[#ccc]">Continue as guest</p>
+              <p className="text-[11px] text-[#555] mt-0.5">No sign-up needed — progress won&apos;t be saved</p>
+            </div>
+            <span className="text-[#444] text-[13px] ml-3">→</span>
+          </button>
+        </div>
 
-        <button
-          type="button"
-          onClick={handleGuest}
-          disabled={loading}
-          className="mt-3 w-full rounded-lg border border-[#2a2a2e] py-2.5 text-[13px] text-[#555] hover:text-[#888] hover:border-[#3a3a3e] disabled:opacity-50 transition-colors"
-        >
-          Continue as guest
-        </button>
       </div>
-
     </div>
   )
 }
