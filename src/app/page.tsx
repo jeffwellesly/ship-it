@@ -15,93 +15,78 @@ export default async function Home() {
 
   const tracks = [
     {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+        </svg>
+      ),
+      iconColor: 'text-violet-400',
       title: 'Software Development with Claude Code',
-      subtitle: `${swCount ?? 0} modules · Git, APIs, databases, deployment, testing`,
+      subtitle: `${swCount ?? 0} modules`,
+      active: true,
       href: '/login',
     },
     {
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+        </svg>
+      ),
+      iconColor: 'text-violet-400',
       title: 'AI/ML for Builders',
-      subtitle: `${aimlCount ?? 0} modules · LLMs, prompting, RAG, agents, AI strategy`,
+      subtitle: `${aimlCount ?? 0} modules`,
+      active: true,
       href: '/login',
     },
   ]
 
-  const features = [
-    { title: 'Plain English', subtitle: 'No jargon.' },
-    { title: 'Build real things', subtitle: 'Ship actual projects.' },
-    { title: 'Earn as you go', subtitle: 'XP and badges.' },
-  ]
-
   return (
-    <div className="min-h-screen bg-[#08090c] flex flex-col">
-      {/* Header */}
-      <header className="border-b border-white/5">
-        <div className="max-w-5xl mx-auto w-full px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="w-7 h-7 rounded-md bg-blue-500 shrink-0" />
-            <span className="font-serif text-sm font-bold tracking-wide text-white">SHIP IT</span>
-          </Link>
-          <div className="flex items-center gap-5">
-            <Link href="/login" className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors">
-              Sign in
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-lg bg-blue-500 hover:bg-blue-400 px-4 py-2 text-sm font-semibold text-white transition-colors"
-            >
-              Start free
-            </Link>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-6">
+      <div className="max-w-3xl w-full text-center">
 
-      {/* Hero */}
-      <div className="flex-1">
-        <div className="max-w-5xl mx-auto w-full px-6 pt-16 pb-20">
-          <p className="text-xs font-bold text-blue-400 uppercase tracking-[0.15em] mb-5">
-            For product builders
-          </p>
+        {/* Brand label */}
+        <p className="text-sm font-bold text-indigo-400 uppercase tracking-widest mb-5">Ship It</p>
 
-          <h1 className="font-serif text-4xl md:text-5xl text-white leading-tight mb-6 max-w-2xl text-balance">
-            &ldquo;The technical education product builders actually need.&rdquo;
-          </h1>
+        {/* Headline */}
+        <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 text-balance">
+          A learning platform for builders who don&apos;t code yet
+        </h1>
 
-          <p className="text-zinc-400 text-base max-w-xl mb-10 leading-relaxed">
-            Not a bootcamp. Not a glossary. Structured tracks that teach software and AI the way a senior engineer would explain it to a smart PM.
-          </p>
+        {/* Subheadline */}
+        <p className="text-base text-zinc-400 mb-10">
+          Pick a track. Learn the concept. Ship something real.
+        </p>
 
-          {/* Feature cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-            {features.map((feature) => (
-              <div key={feature.title} className="rounded-xl bg-[#12141a] border border-white/5 px-5 py-4">
-                <p className="text-sm font-semibold text-white">{feature.title}</p>
-                <p className="text-sm text-zinc-500 mt-0.5">{feature.subtitle}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Course rows */}
-          <div className="flex flex-col gap-3">
-            {tracks.map((track) => (
-              <Link
-                key={track.title}
-                href={track.href}
-                className="group flex items-center justify-between gap-4 rounded-xl bg-[#12141a] border border-white/5 hover:border-blue-500/40 transition-colors px-5 py-4"
+        {/* Course cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+          {tracks.map((track) => {
+            const card = (
+              <div
+                className={`min-h-[132px] text-left p-5 rounded-xl border transition-colors ${
+                  track.active
+                    ? 'bg-zinc-800 border-zinc-700 hover:border-zinc-500 cursor-pointer'
+                    : 'bg-zinc-900 border-zinc-800 cursor-default'
+                }`}
               >
-                <div className="flex items-center gap-4 min-w-0">
-                  <span className="w-9 h-9 shrink-0 rounded-lg bg-blue-500" />
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-white truncate">{track.title}</p>
-                    <p className="text-xs text-zinc-500 mt-0.5 truncate">{track.subtitle}</p>
-                  </div>
-                </div>
-                <span className="shrink-0 rounded-lg bg-blue-500 group-hover:bg-blue-400 px-4 py-2 text-sm font-semibold text-white transition-colors">
-                  Start now →
-                </span>
-              </Link>
-            ))}
-          </div>
+                <span className={`mb-3 block ${track.iconColor}`}>{track.icon}</span>
+                <p className={`font-semibold text-sm ${track.active ? 'text-white' : 'text-zinc-500'}`}>
+                  {track.title}
+                </p>
+                <p className={`text-xs mt-0.5 ${track.active ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                  {track.subtitle}
+                </p>
+              </div>
+            )
+
+            return track.href ? (
+              <Link key={track.title} href={track.href} className="flex flex-col">{card}</Link>
+            ) : (
+              <div key={track.title} className="flex flex-col">{card}</div>
+            )
+          })}
         </div>
+
+
       </div>
     </div>
   )
