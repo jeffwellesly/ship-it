@@ -93,7 +93,7 @@ export default function LoginPage() {
 
         {/* Guest CTA — primary */}
         <div className="px-7 pt-7 pb-6">
-          <h1 className="text-[20px] font-medium text-white mb-1">Try it now — no sign up</h1>
+          <h1 className="text-[20px] font-medium text-white mb-1">Try it now, no sign up</h1>
           <p className="text-[13px] text-[#666] mb-5">Explore lessons, earn XP and badges instantly.</p>
 
           <button

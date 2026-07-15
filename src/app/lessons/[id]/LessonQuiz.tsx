@@ -24,7 +24,7 @@ function CompletionBanner({ newBadges, nextLessonId, isGuest }: { newBadges: New
     <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
       <div className="px-5 py-4 border-b border-[#2a2a2e]">
         <p className="text-[16px] font-medium text-white">Lesson complete 🎉</p>
-        <p className="text-[13px] text-[#888] mt-0.5">You&apos;re on a roll — keep going.</p>
+        <p className="text-[13px] text-[#888] mt-0.5">You&apos;re on a roll, keep going.</p>
       </div>
       <div className="px-5 py-4 flex items-center justify-between">
         <div className="flex items-baseline gap-1">
@@ -77,7 +77,7 @@ function AlreadyCompletedBanner({ nextLessonId, hasQuestions }: { nextLessonId?:
   return (
     <div className="flex items-center justify-between bg-[#1c1c1f] border border-[#2e2e32] rounded-xl px-4 py-3">
       <p className="text-[13px] text-[#888]">
-        {hasQuestions ? '✓ Already completed — correct answers shown below.' : '✓ Already read.'}
+        {hasQuestions ? '✓ Already completed, correct answers shown below.' : '✓ Already read.'}
       </p>
       {nextLessonId && (
         <Link
@@ -223,7 +223,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
               </div>
               {isWrong && (
                 <p className="mt-2.5 text-[12px] text-red-400">
-                  Incorrect — the correct answer is highlighted above.
+                  Incorrect, the correct answer is highlighted above.
                 </p>
               )}
             </div>
