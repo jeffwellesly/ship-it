@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import GuestCta from './GuestCta'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -41,52 +42,62 @@ export default async function Home() {
   ]
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-6">
-      <div className="max-w-3xl w-full text-center">
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center px-6">
 
-        {/* Brand label */}
-        <p className="text-sm font-bold text-indigo-400 uppercase tracking-widest mb-5">Ship It</p>
+      {/* Top nav */}
+      <div className="w-full max-w-3xl flex items-center justify-end gap-4 pt-6">
+        <Link href="/login" className="text-sm text-zinc-400 hover:text-white transition-colors">
+          Sign in
+        </Link>
+        <GuestCta />
+      </div>
 
-        {/* Headline */}
-        <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 text-balance">
-          A learning platform for builders who don&apos;t code yet
-        </h1>
+      <div className="flex-1 flex items-center justify-center w-full">
+        <div className="max-w-3xl w-full text-center">
 
-        {/* Subheadline */}
-        <p className="text-base text-zinc-400 mb-10">
-          Pick a track. Learn the concept. Ship something real.
-        </p>
+          {/* Brand label */}
+          <p className="text-sm font-bold text-indigo-400 uppercase tracking-widest mb-5">Ship It</p>
 
-        {/* Course cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-          {tracks.map((track) => {
-            const card = (
-              <div
-                className={`min-h-[132px] text-left p-5 rounded-xl border transition-colors ${
-                  track.active
-                    ? 'bg-zinc-800 border-zinc-700 hover:border-zinc-500 cursor-pointer'
-                    : 'bg-zinc-900 border-zinc-800 cursor-default'
-                }`}
-              >
-                <span className={`mb-3 block ${track.iconColor}`}>{track.icon}</span>
-                <p className={`font-semibold text-sm ${track.active ? 'text-white' : 'text-zinc-500'}`}>
-                  {track.title}
-                </p>
-                <p className={`text-xs mt-0.5 ${track.active ? 'text-zinc-400' : 'text-zinc-600'}`}>
-                  {track.subtitle}
-                </p>
-              </div>
-            )
+          {/* Headline */}
+          <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 text-balance">
+            A learning platform for builders who don&apos;t code yet
+          </h1>
 
-            return track.href ? (
-              <Link key={track.title} href={track.href} className="flex flex-col">{card}</Link>
-            ) : (
-              <div key={track.title} className="flex flex-col">{card}</div>
-            )
-          })}
+          {/* Subheadline */}
+          <p className="text-base text-zinc-400 mb-10">
+            Pick a track. Learn the concept. Ship something real.
+          </p>
+
+          {/* Course cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+            {tracks.map((track) => {
+              const card = (
+                <div
+                  className={`min-h-[132px] text-left p-5 rounded-xl border transition-colors ${
+                    track.active
+                      ? 'bg-zinc-800 border-zinc-700 hover:border-zinc-500 cursor-pointer'
+                      : 'bg-zinc-900 border-zinc-800 cursor-default'
+                  }`}
+                >
+                  <span className={`mb-3 block ${track.iconColor}`}>{track.icon}</span>
+                  <p className={`font-semibold text-sm ${track.active ? 'text-white' : 'text-zinc-500'}`}>
+                    {track.title}
+                  </p>
+                  <p className={`text-xs mt-0.5 ${track.active ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                    {track.subtitle}
+                  </p>
+                </div>
+              )
+
+              return track.href ? (
+                <Link key={track.title} href={track.href} className="flex flex-col">{card}</Link>
+              ) : (
+                <div key={track.title} className="flex flex-col">{card}</div>
+              )
+            })}
+          </div>
+
         </div>
-
-
       </div>
     </div>
   )
