@@ -49,12 +49,12 @@ export default async function Home() {
 
         {/* Headline */}
         <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 text-balance">
-          The technical education product builders actually need.
+          A learning platform for builders who don&apos;t code yet
         </h1>
 
         {/* Subheadline */}
         <p className="text-base text-zinc-400 mb-10">
-          Not a bootcamp. Not a glossary. Structured tracks that teach software and AI the way a senior engineer would explain it to a smart PM.
+          Pick a track. Learn the concept. Ship something real.
         </p>
 
         {/* Course cards */}
