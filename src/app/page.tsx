@@ -49,7 +49,7 @@ export default async function Home() {
 
         {/* Headline */}
         <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 text-balance">
-          &ldquo;The technical education product builders actually need.&rdquo;
+          The technical education product builders actually need.
         </h1>
 
         {/* Subheadline */}
