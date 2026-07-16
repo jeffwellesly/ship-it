@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
+import CoinIcon from '@/components/CoinIcon'
 
 type LessonRef = { id: string; title: string; sort_order: number }
 type ModuleRef = { id: string; sort_order: number; lessons: LessonRef[] }
@@ -70,10 +71,8 @@ export default async function DashboardPage() {
             </svg>
           </Link>
           <div className="flex items-center gap-1.5 bg-[#1c1c1f] border border-[#3a2e1a] rounded-full px-3.5 py-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M13 3l-7 10h6l-1 8 7-10h-6l1-8z" />
-            </svg>
-            <span className="text-[13px] font-medium text-[#FAC775]">{xp} XP</span>
+            <CoinIcon size={13} />
+            <span className="text-[13px] font-medium text-[#FAC775]">{xp} Coins</span>
           </div>
         </div>
       </div>
@@ -100,7 +99,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-3 gap-3 mb-5">
           <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl py-5 text-center">
             <p className="text-[26px] font-semibold text-white leading-none mb-1.5">{xp}</p>
-            <p className="text-[11px] font-medium tracking-[0.04em] text-[#666] uppercase">XP</p>
+            <p className="text-[11px] font-medium tracking-[0.04em] text-[#666] uppercase">Coins</p>
           </div>
           <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl py-5 text-center">
             <p className="text-[26px] font-semibold text-white leading-none mb-1.5">{badgeCount}</p>

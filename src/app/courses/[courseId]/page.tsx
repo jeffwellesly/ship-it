@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import CoinIcon from '@/components/CoinIcon'
 
 type RawLesson = { id: string; title: string; sort_order: number }
 type RawModule = { id: string; title: string; description: string; sort_order: number; lessons: RawLesson[] }
@@ -78,10 +79,8 @@ export default async function CourseDetailPage({
             Courses
           </Link>
           <div className="flex items-center gap-1.5 bg-[#1c1c1f] border border-[#3a2e1a] rounded-full px-3.5 py-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M13 3l-7 10h6l-1 8 7-10h-6l1-8z" />
-            </svg>
-            <span className="text-[13px] font-medium text-[#FAC775]">{xp} XP</span>
+            <CoinIcon size={13} />
+            <span className="text-[13px] font-medium text-[#FAC775]">{xp} Coins</span>
           </div>
         </div>
       </div>
@@ -192,7 +191,7 @@ export default async function CourseDetailPage({
                       {lesson.title}
                     </span>
                     {lesson.completed
-                      ? <span className="text-[11px] text-[#3C3489] font-medium flex-shrink-0">+10 XP</span>
+                      ? <span className="text-[11px] text-[#3C3489] font-medium flex-shrink-0">+10 Coins</span>
                       : <span className="text-[13px] text-[#555] flex-shrink-0">→</span>
                     }
                   </Link>

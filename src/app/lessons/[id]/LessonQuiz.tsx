@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { completeLesson, type NewBadge } from './actions'
+import CoinIcon from '@/components/CoinIcon'
 
 type Question = {
   id: string
@@ -27,9 +28,12 @@ function CompletionBanner({ newBadges, nextLessonId, isGuest }: { newBadges: New
         <p className="text-[13px] text-[#888] mt-0.5">You&apos;re on a roll, keep going.</p>
       </div>
       <div className="px-5 py-4 flex items-center justify-between">
-        <div className="flex items-baseline gap-1">
-          <span className="text-[28px] font-medium text-[#FAC775]">+10</span>
-          <span className="text-[13px] font-medium text-[#EF9F27]">XP</span>
+        <div className="flex items-center gap-2">
+          <CoinIcon size={22} />
+          <div className="flex items-baseline gap-1">
+            <span className="text-[28px] font-medium text-[#FAC775]">+10</span>
+            <span className="text-[13px] font-medium text-[#EF9F27]">Coins</span>
+          </div>
         </div>
         {nextLessonId && (
           <Link
@@ -45,7 +49,7 @@ function CompletionBanner({ newBadges, nextLessonId, isGuest }: { newBadges: New
         <div className="px-5 py-4 border-t border-[#2a2a2e] flex items-center justify-between gap-4">
           <div>
             <p className="text-[13px] font-medium text-white">Save your progress</p>
-            <p className="text-[12px] text-[#888] mt-0.5">Your XP and streaks are lost when you close the tab.</p>
+            <p className="text-[12px] text-[#888] mt-0.5">Your coins and streaks are lost when you close the tab.</p>
           </div>
           <Link
             href="/login"
