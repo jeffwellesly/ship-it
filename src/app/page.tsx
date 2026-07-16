@@ -46,7 +46,10 @@ export default async function Home() {
 
       {/* Top nav */}
       <div className="w-full max-w-3xl flex items-center justify-end gap-4 pt-6">
-        <Link href="/login" className="text-sm text-zinc-400 hover:text-white transition-colors">
+        <Link
+          href="/login"
+          className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 border border-zinc-700 hover:border-zinc-500 hover:text-white transition-colors"
+        >
           Sign in
         </Link>
         <GuestCta />
