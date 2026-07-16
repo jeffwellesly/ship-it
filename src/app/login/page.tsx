@@ -91,31 +91,12 @@ export default function LoginPage() {
       {/* Card */}
       <div className="w-full max-w-[360px] bg-[#111113] border border-[#2a2a2e] rounded-2xl overflow-hidden">
 
-        {/* Guest CTA — primary */}
+        {/* Sign-in form — primary */}
         <div className="px-7 pt-7 pb-6">
-          <h1 className="text-[20px] font-medium text-white mb-1">Try it now, no sign up</h1>
-          <p className="text-[13px] text-[#666] mb-5">Explore lessons, earn XP and badges instantly.</p>
-
-          <button
-            type="button"
-            onClick={handleGuest}
-            disabled={loading}
-            className="w-full rounded-xl py-3 text-[15px] font-medium text-white disabled:opacity-50 hover:opacity-90 transition-opacity"
-            style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
-          >
-            Continue as guest
-          </button>
-        </div>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 px-7">
-          <div className="flex-1 h-px bg-[#2a2a2e]" />
-          <span className="text-[10px] font-semibold tracking-[0.12em] text-[#3a3a3e] uppercase">Save Progress</span>
-          <div className="flex-1 h-px bg-[#2a2a2e]" />
-        </div>
-
-        {/* Sign-in form — secondary */}
-        <div className="px-7 pt-5 pb-7">
+          <h1 className="text-[20px] font-medium text-white mb-1">
+            {mode === 'signin' ? 'Sign in' : 'Sign up'}
+          </h1>
+          <p className="text-[13px] text-[#666] mb-5">Enter your email to continue.</p>
 
           {error && (
             <div className="mb-4 rounded-xl bg-red-950/50 border border-red-800/60 px-4 py-3 text-[13px] text-red-300">
@@ -184,6 +165,25 @@ export default function LoginPage() {
               {mode === 'signin' ? 'Sign up' : 'Sign in'}
             </button>
           </p>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 px-7">
+          <div className="flex-1 h-px bg-[#2a2a2e]" />
+          <span className="text-[10px] font-semibold tracking-[0.12em] text-[#3a3a3e] uppercase">Don&apos;t want to sign in?</span>
+          <div className="flex-1 h-px bg-[#2a2a2e]" />
+        </div>
+
+        {/* Guest CTA — secondary */}
+        <div className="px-7 pt-5 pb-7">
+          <button
+            type="button"
+            onClick={handleGuest}
+            disabled={loading}
+            className="w-full rounded-lg border border-[#2a2a2e] hover:border-[#3a3a3e] py-2.5 text-[14px] font-medium text-[#aaa] hover:text-white disabled:opacity-50 transition-colors"
+          >
+            Continue as guest
+          </button>
         </div>
       </div>
 
