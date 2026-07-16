@@ -187,6 +187,28 @@ export default async function LessonPage({
     }
   }
 
+  // Previous lesson: previous in module, or last lesson of previous module
+  let prevLessonId: string | null = null
+  if (currentIdx > 0) {
+    prevLessonId = sortedLessons[currentIdx - 1].id
+  } else if (mod) {
+    const { data: prevModule } = await supabase
+      .from('modules')
+      .select('id, lessons(id, sort_order)')
+      .eq('course_id', mod.course_id)
+      .lt('sort_order', mod.sort_order)
+      .order('sort_order', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (prevModule) {
+      const pml = prevModule.lessons as unknown as { id: string; sort_order: number }[]
+      if (pml?.length) {
+        prevLessonId = [...pml].sort((a, b) => b.sort_order - a.sort_order)[0].id
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#0c0c0c]">
 
@@ -238,6 +260,26 @@ export default async function LessonPage({
             nextLessonId={nextLessonId}
             isGuest={user.is_anonymous ?? false}
           />
+
+          {/* Prev / next lesson navigation */}
+          <div className="flex items-center justify-between mt-5">
+            {prevLessonId ? (
+              <Link
+                href={`/lessons/${prevLessonId}`}
+                className="text-[13px] text-[#888] hover:text-white transition-colors"
+              >
+                ← Previous lesson
+              </Link>
+            ) : <span />}
+            {nextLessonId ? (
+              <Link
+                href={`/lessons/${nextLessonId}`}
+                className="text-[13px] text-[#888] hover:text-white transition-colors"
+              >
+                Next lesson →
+              </Link>
+            ) : <span />}
+          </div>
         </div>
 
         {/* Progress rail */}

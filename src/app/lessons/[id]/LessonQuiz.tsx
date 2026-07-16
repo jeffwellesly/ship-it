@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { completeLesson, type NewBadge } from './actions'
@@ -105,19 +105,26 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
   const [wrongIds, setWrongIds] = useState<Set<string>>(new Set())
   const [newBadges, setNewBadges] = useState<NewBadge[]>([])
   const [pending, startTransition] = useTransition()
+  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current)
+    }
+  }, [])
 
   const hasQuestions = questions.length > 0
   const allAnswered = questions.every((q) => answers[q.id] !== undefined)
   const isReviewing = completed || (submitted && wrongIds.size === 0)
 
-  function markComplete(autoAdvance: boolean) {
+  function markComplete() {
     startTransition(async () => {
       const result = await completeLesson(lessonId)
       if ('success' in result) setNewBadges(result.newBadges)
       setCompleted(true)
       setJustCompleted(true)
-      if (autoAdvance && nextLessonId) {
-        setTimeout(() => router.push(`/lessons/${nextLessonId}`), 1200)
+      if (nextLessonId) {
+        autoAdvanceTimer.current = setTimeout(() => router.push(`/lessons/${nextLessonId}`), 1200)
       }
     })
   }
@@ -134,7 +141,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
     }
     setSubmitted(true)
     setWrongIds(wrong)
-    if (wrong.size === 0) markComplete(false)
+    if (wrong.size === 0) markComplete()
   }
 
   function handleRetry() {
@@ -174,7 +181,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
         )}
         {!completed && (
           <button
-            onClick={() => markComplete(true)}
+            onClick={markComplete}
             disabled={pending}
             className="w-full py-[13px] rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
