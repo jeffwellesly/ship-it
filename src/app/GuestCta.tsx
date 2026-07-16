@@ -29,8 +29,7 @@ export default function GuestCta() {
         type="button"
         onClick={handleGuest}
         disabled={loading}
-        className="rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-50 hover:opacity-90 transition-opacity"
-        style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
+        className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-300 border border-zinc-700 hover:border-zinc-500 hover:text-white disabled:opacity-50 transition-colors"
       >
         {loading ? 'Loading…' : 'Continue as guest'}
       </button>
