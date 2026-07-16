@@ -99,6 +99,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [completed, setCompleted] = useState(alreadyCompleted)
+  const [justCompleted, setJustCompleted] = useState(false)
   const [wrongIds, setWrongIds] = useState<Set<string>>(new Set())
   const [newBadges, setNewBadges] = useState<NewBadge[]>([])
   const [pending, startTransition] = useTransition()
@@ -112,6 +113,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
       const result = await completeLesson(lessonId)
       if ('success' in result) setNewBadges(result.newBadges)
       setCompleted(true)
+      setJustCompleted(true)
     })
   }
 
@@ -159,10 +161,10 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
   if (!hasQuestions) {
     return (
       <div className="mt-5">
-        {completed && !alreadyCompleted && (
+        {completed && justCompleted && (
           <CompletionBanner newBadges={newBadges} nextLessonId={nextLessonId} isGuest={isGuest} />
         )}
-        {completed && alreadyCompleted && (
+        {completed && !justCompleted && (
           <AlreadyCompletedBanner nextLessonId={nextLessonId} hasQuestions={false} />
         )}
         {!completed && (
@@ -188,12 +190,12 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
         <div className="h-px flex-1 bg-[#2a2a2e]" />
       </div>
 
-      {completed && !alreadyCompleted && (
+      {completed && justCompleted && (
         <div className="mb-5">
           <CompletionBanner newBadges={newBadges} nextLessonId={nextLessonId} isGuest={isGuest} />
         </div>
       )}
-      {completed && alreadyCompleted && (
+      {completed && !justCompleted && (
         <div className="mb-5">
           <AlreadyCompletedBanner nextLessonId={nextLessonId} hasQuestions={true} />
         </div>
