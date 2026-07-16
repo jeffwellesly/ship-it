@@ -24,7 +24,6 @@ export async function completeLesson(lessonId: string): Promise<CompleteLessonRe
   if (error) return { error: error.message }
 
   revalidatePath('/lessons')
-  revalidatePath(`/lessons/${lessonId}`)
   revalidatePath('/dashboard')
   revalidatePath('/courses')
 

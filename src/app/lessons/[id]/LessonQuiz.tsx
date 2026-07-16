@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { completeLesson, type NewBadge } from './actions'
 import CoinIcon from '@/components/CoinIcon'
@@ -96,6 +97,7 @@ function AlreadyCompletedBanner({ nextLessonId, hasQuestions }: { nextLessonId?:
 }
 
 export default function LessonQuiz({ lessonId, questions, alreadyCompleted, nextLessonId, isGuest }: Props) {
+  const router = useRouter()
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [completed, setCompleted] = useState(alreadyCompleted)
@@ -108,12 +110,15 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
   const allAnswered = questions.every((q) => answers[q.id] !== undefined)
   const isReviewing = completed || (submitted && wrongIds.size === 0)
 
-  function markComplete() {
+  function markComplete(autoAdvance: boolean) {
     startTransition(async () => {
       const result = await completeLesson(lessonId)
       if ('success' in result) setNewBadges(result.newBadges)
       setCompleted(true)
       setJustCompleted(true)
+      if (autoAdvance && nextLessonId) {
+        setTimeout(() => router.push(`/lessons/${nextLessonId}`), 1200)
+      }
     })
   }
 
@@ -129,7 +134,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
     }
     setSubmitted(true)
     setWrongIds(wrong)
-    if (wrong.size === 0) markComplete()
+    if (wrong.size === 0) markComplete(false)
   }
 
   function handleRetry() {
@@ -169,7 +174,7 @@ export default function LessonQuiz({ lessonId, questions, alreadyCompleted, next
         )}
         {!completed && (
           <button
-            onClick={markComplete}
+            onClick={() => markComplete(true)}
             disabled={pending}
             className="w-full py-[13px] rounded-xl text-[14px] font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg,#7F77DD,#534AB7)' }}
