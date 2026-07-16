@@ -43,6 +43,7 @@ export default async function CoursesPage() {
   const courses = (rawCourses as unknown as CourseRow[]) ?? []
   const completedIds = new Set(progress?.map((p) => p.lesson_id) ?? [])
   const xp = profile?.total_xp ?? 0
+  const hasProgress = completedIds.size > 0
 
   return (
     <div className="min-h-screen bg-[#0c0c0c]">
@@ -63,7 +64,9 @@ export default async function CoursesPage() {
 
       <div className="max-w-sm mx-auto px-7 py-7">
         <h1 className="text-[26px] font-medium text-white mb-1">Your courses</h1>
-        <p className="text-[13px] text-[#888] mb-6">Pick up where you left off.</p>
+        <p className="text-[13px] text-[#888] mb-6">
+          {hasProgress ? 'Pick up where you left off.' : 'Pick a track to get started.'}
+        </p>
 
         <div className="space-y-3">
 
