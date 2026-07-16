@@ -38,7 +38,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.nextUrl))
   }
 
-  if (user && request.nextUrl.pathname === '/login') {
+  if (user && !user.is_anonymous && request.nextUrl.pathname === '/login') {
     return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
   }
 
