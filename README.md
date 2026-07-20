@@ -1,88 +1,51 @@
 # Ship It
 
-Ship It is an online course platform focused on AI/ML education. Learners work through structured courses made up of modules and lessons, take quizzes, track progress, and level up as they go.
+A full-stack AI/ML course platform, built while learning to build full-stack apps with AI as a coding partner.
 
-Built with [Next.js](https://nextjs.org) and [Supabase](https://supabase.com), deployed on [Vercel](https://vercel.com).
+## What this project does
 
-## Features
+Ship It is an online course platform. Visitors can browse an AI/ML course made up of modules and lessons, work through it as a guest (no sign-up required) or sign in with GitHub to save progress, take quizzes at the end of most lessons, and track their progress on a gamified dashboard (levels, coins, completion state) that's backed by a real database.
 
-- **Courses, modules, and lessons** — content organized into a course → module → lesson hierarchy
-- **Quizzes** — most lessons end with a quiz; completing it (or reading a no-quiz lesson) auto-advances to the next lesson
-- **Guest mode** — visitors can start learning immediately via anonymous sign-in, no account required
-- **Accounts** — GitHub OAuth sign-in for saving progress long-term
-- **Progress tracking** — a gamified dashboard shows level, coins, and completion progress across courses
+## Why I built this
+
+To understand how a real full-stack app fits together: how a frontend talks to a backend, how auth and user sessions actually work (including an anonymous "guest" flow, not just login/logout), how a Postgres database models and stores that kind of app state, and how to iterate on a live product with Claude Code as a building partner.
 
 ## Tech stack
 
-- [Next.js](https://nextjs.org) (App Router) + [React](https://react.dev)
-- [Supabase](https://supabase.com) — auth (GitHub OAuth + anonymous guest sign-in) and Postgres database
-- [Tailwind CSS](https://tailwindcss.com)
-- [Playwright](https://playwright.dev) for end-to-end tests
-- [TypeScript](https://www.typescriptlang.org)
+Next.js (App Router), React, TypeScript, Supabase (Postgres database + auth — GitHub OAuth and anonymous guest sign-in), Tailwind CSS, Playwright, Git, GitHub, deployed on Vercel.
 
-> **Note:** This project runs on a customized fork of Next.js with some non-standard APIs. See `AGENTS.md` if you're contributing and want the details.
-
-## Getting started
-
-### Prerequisites
-
-- Node.js
-- A [Supabase](https://supabase.com) project (or the [Supabase CLI](https://supabase.com/docs/guides/local-development) for local development)
-
-### Setup
-
-1. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-2. Create a `.env.local` file in the project root with your Supabase credentials:
-
-   ```bash
-   NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-   ```
-
-3. Run the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Other scripts
+## How to run locally
 
 ```bash
-npm run build   # production build
-npm run start   # run the production build locally
-npm run lint    # lint the codebase
+npm install
 ```
 
-Database schema and course content live in `supabase/migrations/`. Apply them to your Supabase project with the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started):
+Create a `.env.local` file in the project root:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
 
 ```bash
-supabase db push
+npm run dev
 ```
 
-## Project structure
+Open [http://localhost:3000](http://localhost:3000).
 
-```
-src/
-  app/
-    page.tsx           # landing page
-    courses/            # course list + course detail pages
-    lessons/[id]/       # lesson pages, quizzes
-    dashboard/           # logged-in user dashboard
-    login/                # sign-in / guest entry
-    auth/callback/         # Supabase auth callback
-  components/           # shared UI components
-  lib/supabase/          # Supabase client/server helpers
-supabase/
-  migrations/            # database schema + course content
-```
+Database schema and course content are managed as Supabase migrations in `supabase/migrations/` — apply them to your own Supabase project with `supabase db push`.
 
-## Deployment
+## What I learned
 
-The app is deployed on [Vercel](https://vercel.com). Pushes to `master` deploy automatically.
+- How the Next.js App Router splits work between server and client components, and how server actions talk to the database
+- How to model auth beyond simple login/logout — anonymous guest sessions that can later convert to a real account
+- How to design a Postgres schema (courses → modules → lessons → quizzes → user progress) and ship changes to it safely via migrations
+- How to use Git and GitHub to track a project's history and iterate in small, reviewable commits
+- How to work with Claude Code as a building partner — describing what I want, reviewing what it changes, and catching issues before they ship
+
+## Next improvements
+
+- Add more course tracks beyond the current AI/ML course
+- Add an email/password sign-in option alongside GitHub OAuth
+- Further mobile polish on the dashboard and lesson pages
+- Automated end-to-end test coverage for the quiz and progress-tracking flows
