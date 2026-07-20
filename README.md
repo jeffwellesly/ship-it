@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ship It
 
-## Getting Started
+Ship It is an online course platform focused on AI/ML education. Learners work through structured courses made up of modules and lessons, take quizzes, track progress, and level up as they go.
 
-First, run the development server:
+Built with [Next.js](https://nextjs.org) and [Supabase](https://supabase.com), deployed on [Vercel](https://vercel.com).
+
+## Features
+
+- **Courses, modules, and lessons** — content organized into a course → module → lesson hierarchy
+- **Quizzes** — most lessons end with a quiz; completing it (or reading a no-quiz lesson) auto-advances to the next lesson
+- **Guest mode** — visitors can start learning immediately via anonymous sign-in, no account required
+- **Accounts** — GitHub OAuth sign-in for saving progress long-term
+- **Progress tracking** — a gamified dashboard shows level, coins, and completion progress across courses
+
+## Tech stack
+
+- [Next.js](https://nextjs.org) (App Router) + [React](https://react.dev)
+- [Supabase](https://supabase.com) — auth (GitHub OAuth + anonymous guest sign-in) and Postgres database
+- [Tailwind CSS](https://tailwindcss.com)
+- [Playwright](https://playwright.dev) for end-to-end tests
+- [TypeScript](https://www.typescriptlang.org)
+
+> **Note:** This project runs on a customized fork of Next.js with some non-standard APIs. See `AGENTS.md` if you're contributing and want the details.
+
+## Getting started
+
+### Prerequisites
+
+- Node.js
+- A [Supabase](https://supabase.com) project (or the [Supabase CLI](https://supabase.com/docs/guides/local-development) for local development)
+
+### Setup
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Create a `.env.local` file in the project root with your Supabase credentials:
+
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+3. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Other scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build   # production build
+npm run start   # run the production build locally
+npm run lint    # lint the codebase
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Database schema and course content live in `supabase/migrations/`. Apply them to your Supabase project with the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+supabase db push
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project structure
 
-## Learn More
+```
+src/
+  app/
+    page.tsx           # landing page
+    courses/            # course list + course detail pages
+    lessons/[id]/       # lesson pages, quizzes
+    dashboard/           # logged-in user dashboard
+    login/                # sign-in / guest entry
+    auth/callback/         # Supabase auth callback
+  components/           # shared UI components
+  lib/supabase/          # Supabase client/server helpers
+supabase/
+  migrations/            # database schema + course content
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The app is deployed on [Vercel](https://vercel.com). Pushes to `master` deploy automatically.
