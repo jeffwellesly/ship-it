@@ -21,6 +21,19 @@ type Props = {
   isGuest?: boolean
 }
 
+function shuffleChoices(q: Question): Question {
+  const order = q.choices.map((_, idx) => idx)
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[order[i], order[j]] = [order[j], order[i]]
+  }
+  return {
+    ...q,
+    choices: order.map((idx) => q.choices[idx]),
+    correct_choice_index: order.indexOf(q.correct_choice_index),
+  }
+}
+
 function CompletionBanner({ newBadges, nextLessonId, isGuest }: { newBadges: NewBadge[]; nextLessonId?: string | null; isGuest?: boolean }) {
   return (
     <div className="bg-[#151517] border border-[#2a2a2e] rounded-2xl overflow-hidden">
@@ -96,8 +109,9 @@ function AlreadyCompletedBanner({ nextLessonId, hasQuestions }: { nextLessonId?:
   )
 }
 
-export default function LessonQuiz({ lessonId, questions, alreadyCompleted, nextLessonId, isGuest }: Props) {
+export default function LessonQuiz({ lessonId, questions: rawQuestions, alreadyCompleted, nextLessonId, isGuest }: Props) {
   const router = useRouter()
+  const [questions] = useState(() => rawQuestions.map(shuffleChoices))
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [completed, setCompleted] = useState(alreadyCompleted)
