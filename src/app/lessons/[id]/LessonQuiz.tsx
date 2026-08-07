@@ -111,7 +111,14 @@ function AlreadyCompletedBanner({ nextLessonId, hasQuestions }: { nextLessonId?:
 
 export default function LessonQuiz({ lessonId, questions: rawQuestions, alreadyCompleted, nextLessonId, isGuest }: Props) {
   const router = useRouter()
-  const [questions] = useState(() => rawQuestions.map(shuffleChoices))
+  const [questions, setQuestions] = useState(rawQuestions)
+  // Shuffle only after mount: doing it during the initial render would run on
+  // the server too, and the server's random draw would never match the
+  // client's, causing a hydration mismatch.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setQuestions(rawQuestions.map(shuffleChoices))
+  }, [rawQuestions])
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [completed, setCompleted] = useState(alreadyCompleted)

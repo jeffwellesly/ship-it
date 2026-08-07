@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   const [{ data: profile }, { data: userBadges }, { data: progress }, { data: rawCourses }] = await Promise.all([
     supabase.from('profiles').select('total_xp, display_name').eq('id', user.id).single(),
     supabase.from('user_badges').select('id').eq('user_id', user.id),
-    supabase.from('user_progress').select('lesson_id').eq('user_id', user.id),
+    supabase.from('user_progress').select('lesson_id, completed_at').eq('user_id', user.id).order('completed_at', { ascending: false }),
     supabase
       .from('courses')
       .select('id, sort_order, modules(id, sort_order, lessons(id, title, sort_order))')
@@ -50,15 +50,31 @@ export default async function DashboardPage() {
         .map((m) => ({ ...m, lessons: [...m.lessons].sort((a, b) => a.sort_order - b.sort_order) })),
     }))
 
-  let nextUp: { lessonId: string; lessonTitle: string; moduleNumber: number; lessonNumber: number } | null = null
-  findNext: for (const course of courses) {
+  function firstIncomplete(course: (typeof courses)[number]) {
     for (const mod of course.modules) {
       for (const lesson of mod.lessons) {
         if (!completedIds.has(lesson.id)) {
-          nextUp = { lessonId: lesson.id, lessonTitle: lesson.title, moduleNumber: mod.sort_order, lessonNumber: lesson.sort_order }
-          break findNext
+          return { lessonId: lesson.id, lessonTitle: lesson.title, moduleNumber: mod.sort_order, lessonNumber: lesson.sort_order }
         }
       }
+    }
+    return null
+  }
+
+  // Resume within whichever course the user most recently made progress in,
+  // rather than always the first incomplete lesson in course sort order —
+  // otherwise "Continue" can pull someone out of the course they're actually
+  // working through and back into an earlier, unfinished one.
+  const mostRecentLessonId = progress?.[0]?.lesson_id
+  const mostRecentCourse = mostRecentLessonId
+    ? courses.find((c) => c.modules.some((m) => m.lessons.some((l) => l.id === mostRecentLessonId)))
+    : null
+
+  let nextUp = mostRecentCourse ? firstIncomplete(mostRecentCourse) : null
+  if (!nextUp) {
+    for (const course of courses) {
+      nextUp = firstIncomplete(course)
+      if (nextUp) break
     }
   }
 

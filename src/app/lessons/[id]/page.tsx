@@ -254,6 +254,7 @@ export default async function LessonPage({
           </div>
 
           <LessonQuiz
+            key={lesson.id}
             lessonId={lesson.id}
             questions={questions ?? []}
             alreadyCompleted={alreadyCompleted}
